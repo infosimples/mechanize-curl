@@ -1,5 +1,12 @@
 # Mechanize CHANGELOG
 
+# Mechanize after CURL fork
+## 0.0.1 / 2024-11-19
+
+* Add basic support for CURL requests using the `curb` gem. @adrianodennanni
+* Configure gemspec and READMEs for the fork. @adrianodennanni
+
+# Mechanize before fork
 ## 2.12.2 / 2023-10-02
 
 * Quash warnings from `Mime::Type.new` in `mime-types` v3.6.0. (#655) @avk

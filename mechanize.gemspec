@@ -3,10 +3,10 @@
 require_relative 'lib/mechanize/version'
 
 Gem::Specification.new do |spec|
-  spec.name = "mechanize"
+  spec.name = "mechanize-curl"
   spec.version = Mechanize::VERSION
-  spec.homepage = "https://github.com/sparklemotion/mechanize"
-  spec.summary = 'The Mechanize library is used for automating interaction with websites'
+  spec.homepage = "https://github.com/infosimples/mechanize-curl/"
+  spec.summary = 'Mechanize gem fork that uses CURL instead of net/http'
   spec.description =
     [
       "The Mechanize library is used for automating interaction with websites.",
@@ -18,6 +18,7 @@ Gem::Specification.new do |spec|
 
   spec.authors =
     [
+      'Infosimples',
       'Eric Hodel',
       'Aaron Patterson',
       'Mike Dalessio',
@@ -26,6 +27,7 @@ Gem::Specification.new do |spec|
     ]
   spec.email =
     [
+      'suporte@infosimples.com.br',
       'drbrain@segment7.net',
       'aaron.patterson@gmail.com',
       'mike.dalessio@gmail.com',
@@ -35,11 +37,11 @@ Gem::Specification.new do |spec|
 
   spec.metadata = {
     'yard.run'          => 'yard',
-    'bug_tracker_uri'   => 'https://github.com/sparklemotion/mechanize/issues',
-    'changelog_uri'     => 'https://github.com/sparklemotion/mechanize/blob/main/CHANGELOG.md',
-    'documentation_uri' => 'https://www.rubydoc.info/gems/mechanize',
-    'homepage_uri'      => 'https://github.com/sparklemotion/mechanize',
-    'source_code_uri'   => 'https://github.com/sparklemotion/mechanize'
+    'bug_tracker_uri'   => 'https://github.com/infosimples/mechanize-curl/issues',
+    'changelog_uri'     => 'https://github.com/infosimples/mechanize-curl/CHANGELOG.md',
+    'documentation_uri' => 'https://www.rubydoc.info/gems/mechanize-curl',
+    'homepage_uri'      => 'https://github.com/infosimples/mechanize-curl',
+    'source_code_uri'   => 'https://github.com/infosimples/mechanize-curl'
   }
 
   spec.license = "MIT"
@@ -71,4 +73,6 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency("rubyntlm", ">= 0.6.3", "~> 0.6")
   spec.add_runtime_dependency("base64") # removed from bundled gems in 3.4, and needed by rubyntlm (which doesn't declare this dependency)
   spec.add_runtime_dependency("nkf") # removed from bundled gems in 3.4
+
+  spec.add_development_dependency("curb", "~> 1.0")
 end
