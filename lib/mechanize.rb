@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 require 'mechanize/version'
+require 'curl'
 require 'fileutils'
 require 'forwardable'
 require 'net/http/digest_auth'
@@ -231,6 +232,8 @@ class Mechanize
 
     @default_encoding = nil
     @force_default_encoding = false
+
+    @http_version = ::Curl::HTTP_1_1
 
     # defaults
     @agent.max_history = 50
@@ -705,6 +708,10 @@ class Mechanize
   # The HTTP proxy username
 
   attr_reader :proxy_user
+
+  ##
+  ## HTTP version
+  attr_accessor :http_version
 
   ##
   # *NOTE*: These credentials will be used as a default for any challenge

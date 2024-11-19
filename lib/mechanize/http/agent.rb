@@ -3,6 +3,76 @@ require 'tempfile'
 require 'net/ntlm'
 require 'webrobots'
 
+# "Fake" request class that replaces Net::HTTP::Request*
+# This aims to maximize compatibility with the original Mechanize code
+class CurlHttpRequest
+  include Net::HTTPHeader
+
+  def initialize
+    initialize_http_header(nil)
+  end
+end
+
+# "Fake" response class that replaces Net::HTTP::Response*
+# This aims to maximize compatibility with the original Mechanize code
+class CurlHttpResponse
+  include Net::HTTPHeader
+
+  attr_accessor :body_io, :code, :content_length
+
+  def initialize(curl, max_file_buffer)
+    initialize_http_header(nil)
+
+    @body_io = StringIO.new.set_encoding(Encoding::BINARY)
+    @content_length = -1.0 # Default value
+    @size = 0
+
+    # Parse headers
+    curl.on_header do |header|
+      h = header.strip
+      if h =~ /\A(.*?): (.*)\z/
+        add_field($1, $2)
+        if $1.downcase == 'content-length'
+          @content_length = $2.to_i
+        end
+
+      elsif h =~ /\AHTTP.+(\d{3})\z/
+        @code = $1.to_i
+      end
+
+      header.size # Must return the size of the header
+    end
+
+    # Handle body
+    begin
+      curl.on_body do |part|
+        @size += part.size
+
+        if @body_io.is_a?(StringIO) && max_file_buffer && (@content_length >= max_file_buffer || @size >= max_file_buffer)
+          new_io = make_tempfile 'mechanize-raw'
+
+          new_io.write body_io.string
+
+          @body_io = new_io
+        end
+
+        @body_io.write(part)
+
+        part.size # Must return the size of chunk
+      end
+    rescue StandardError => e
+      @body_io.rewind
+      raise e
+    end
+
+    # After the response is complete, rewind the body IO
+    curl.on_complete do
+      @body_io.flush
+      @body_io.rewind
+    end
+  end
+end
+
 ##
 # An HTTP (and local disk access) user agent.  This class is an implementation
 # detail and is subject to change at any time.
@@ -240,15 +310,17 @@ class Mechanize::HTTP::Agent
   def fetch uri, method = :get, headers = {}, params = [],
             referer = current_page, redirects = 0
 
+    # This section builds the URL
     referer_uri = referer ? referer.uri : nil
     uri         = resolve uri, referer
     uri, params = resolve_parameters uri, method, params
-    request     = http_request uri, method, params
-    connection  = connection_for uri
+    request     = CurlHttpRequest.new
 
+    # This section keeps the original Mechanize methods
     request_auth             request, uri
     disable_keep_alive       request
     enable_gzip              request
+    request_accept           request
     request_language_charset request
     request_cookies          request, uri
     request_host             request, uri
@@ -267,42 +339,42 @@ class Mechanize::HTTP::Agent
       request['If-Modified-Since'] = last_modified
     end if @conditional_requests
 
-    # Specify timeouts if supplied and our connection supports them
-    if @open_timeout && connection.respond_to?(:open_timeout=)
-      connection.open_timeout = @open_timeout
+    # CURL configurations replacing the original Net::HTTP request
+    curl                 = ::Curl::Easy.new
+    curl.connect_timeout = @open_timeout
+    curl.follow_location = !!@redirect_ok
+    curl.headers         = request.each_header.map{|k, v| "#{k}: #{v}"}
+    curl.max_redirects   = @redirection_limit
+    curl.proxy_url       = proxy_uri.to_s if proxy_uri
+    curl.ssl_verify_host = @verify_mode != 0
+    curl.timeout         = @read_timeout
+    curl.url             = uri.to_s
+    curl.useragent       = @user_agent
+    curl.verbose         = !!@logger
+    curl.version         = @context.http_version || Curl::HTTP_1_1
+
+    # An object that imitates a Net::HTTP::Response* subclass
+    response = CurlHttpResponse.new(curl, @max_file_buffer)
+
+    case method
+    when :get
+      curl.http_get
+    when :post
+      curl.http_post(params.first)
+    when :head
+      curl.http_head
+    when :delete
+      curl.http_delete
+    else
+      raise ArgumentError, "unsupported method: #{method}"
     end
-    if @read_timeout && connection.respond_to?(:read_timeout=)
-      connection.read_timeout = @read_timeout
-    end
 
-    request_log request
+    ## Response handling
+    hook_content_encoding response, uri, response.body_io
 
-    response_body_io = nil
+    post_connect uri, response, response.body_io
 
-    # Send the request
-    begin
-      response = connection.request(uri, request) { |res|
-        response_log res
-
-        response_body_io = response_read res, request, uri
-
-        res
-      }
-    rescue Mechanize::ChunkedTerminationError => e
-      raise unless @ignore_bad_chunking
-
-      response = e.response
-      response_body_io = e.body_io
-    end
-
-    hook_content_encoding response, uri, response_body_io
-
-    response_body_io = response_content_encoding response, response_body_io if
-      request.response_body_permitted?
-
-    post_connect uri, response, response_body_io
-
-    page = response_parse response, response_body_io, uri
+    page = response_parse response, response.body_io, uri
 
     response_cookies response, uri, page
 
@@ -313,19 +385,12 @@ class Mechanize::HTTP::Agent
       page.parser.noindex? and raise Mechanize::RobotsDisallowedError.new(uri)
     end
 
-    case response
-    when Net::HTTPSuccess
+    if curl.response_code.to_s[0] == '2'
       page
-    when Mechanize::FileResponse
-      page
-    when Net::HTTPNotModified
-      log.debug("Got cached page") if log
-      visited_page(uri) || page
-    when Net::HTTPRedirection
+    elsif curl.response_code == 304
       response_redirect response, method, page, redirects, headers, referer
-    when Net::HTTPUnauthorized
-      response_authenticate(response, page, uri, request, headers, params,
-                            referer)
+    elsif curl.response_code == 401
+      response_authenticate response, page, uri, request, headers, params, referer
     else
       if @allowed_error_codes.any? {|code| code.to_s == page.code} then
         page
@@ -558,7 +623,7 @@ class Mechanize::HTTP::Agent
 
   def enable_gzip request
     request['accept-encoding'] = if @gzip_enabled
-                                   'gzip,deflate,identity'
+                                   'gzip, deflate, br, zstd'
                                  else
                                    'identity'
                                  end
@@ -637,8 +702,12 @@ class Mechanize::HTTP::Agent
     request['Host'] = [host, port].compact.join ':'
   end
 
+  def request_accept request
+    request['accept'] = 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7'
+  end
+
   def request_language_charset request
-    request['accept-language'] = 'en-us,en;q=0.5'
+    request['accept-language'] = 'pt-BR,pt;q=0.9'
   end
 
   # Log specified headers for the request
