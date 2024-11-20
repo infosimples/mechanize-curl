@@ -1,11 +1,11 @@
 # coding: utf-8
 # frozen_string_literal: true
 
-require 'mechanize/test_case'
+require 'mechanize_curl/test_case'
 
 puts "Nokogiri::VERSION_INFO: #{Nokogiri::VERSION_INFO}"
 
-class TestMechanizePageLink < Mechanize::TestCase
+class TestMechanizePageLink < MechanizeCurl::TestCase
 
   WINDOWS_1255 = <<-HTML
 <meta http-equiv="content-type" content="text/html; charset=windows-1255">
@@ -49,7 +49,7 @@ class TestMechanizePageLink < Mechanize::TestCase
   end
 
   def util_page body = @body, res = @res
-    Mechanize::Page.new @uri, res, body && body.force_encoding(Encoding::BINARY), 200, @mech
+    MechanizeCurl::Page.new @uri, res, body && body.force_encoding(Encoding::BINARY), 200, @mech
   end
 
   def skip_if_nkf_dependency
@@ -60,7 +60,7 @@ class TestMechanizePageLink < Mechanize::TestCase
   end
 
   def test_override_content_type
-    page = Mechanize::Page.new nil, {'content-type' => 'text/html'}, WINDOWS_1255
+    page = MechanizeCurl::Page.new nil, {'content-type' => 'text/html'}, WINDOWS_1255
     assert page
     assert_equal 'text/html; charset=windows-1255', page.content_type
   end
@@ -84,13 +84,13 @@ class TestMechanizePageLink < Mechanize::TestCase
   end
 
   def test_charset_from_content_type
-    charset = Mechanize::Page.__send__ :charset_from_content_type, 'text/html;charset=UTF-8'
+    charset = MechanizeCurl::Page.__send__ :charset_from_content_type, 'text/html;charset=UTF-8'
 
     assert_equal 'UTF-8', charset
   end
 
   def test_charset_from_bad_content_type
-    charset = Mechanize::Page.__send__ :charset_from_content_type, 'text/html'
+    charset = MechanizeCurl::Page.__send__ :charset_from_content_type, 'text/html'
 
     assert_nil charset
   end

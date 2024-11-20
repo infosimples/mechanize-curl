@@ -1,12 +1,12 @@
 # frozen_string_literal: true
-require 'mechanize/test_case'
+require 'mechanize_curl/test_case'
 
-class TestMechanizePageMetaRefresh < Mechanize::TestCase
+class TestMechanizePageMetaRefresh < MechanizeCurl::TestCase
 
   def setup
     super
 
-    @MR = Mechanize::Page::MetaRefresh
+    @MR = MechanizeCurl::Page::MetaRefresh
 
     @uri = URI 'http://example/here/'
   end
@@ -16,7 +16,7 @@ class TestMechanizePageMetaRefresh < Mechanize::TestCase
 <head><meta http-equiv="refresh" content="#{delay};url=#{uri}"></head>
     BODY
 
-    Mechanize::Page.new(@uri, nil, body, 200, @mech)
+    MechanizeCurl::Page.new(@uri, nil, body, 200, @mech)
   end
 
   def util_meta_refresh page
@@ -126,7 +126,7 @@ class TestMechanizePageMetaRefresh < Mechanize::TestCase
 <head><meta http-equiv="refresh"></head>
     BODY
 
-    page = Mechanize::Page.new(@uri, nil, body, 200, @mech)
+    page = MechanizeCurl::Page.new(@uri, nil, body, 200, @mech)
 
     assert_nil util_meta_refresh page
   end
@@ -136,7 +136,7 @@ class TestMechanizePageMetaRefresh < Mechanize::TestCase
 <head><meta http-equiv="other-thing" content="0;"></head>
     BODY
 
-    page = Mechanize::Page.new(@uri, nil, body, 200, @mech)
+    page = MechanizeCurl::Page.new(@uri, nil, body, 200, @mech)
 
     assert_nil util_meta_refresh page
   end

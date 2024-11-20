@@ -1,7 +1,7 @@
 # frozen_string_literal: true
-require 'mechanize/test_case'
+require 'mechanize_curl/test_case'
 
-class TestMechanizeFormRadioButton < Mechanize::TestCase
+class TestMechanizeFormRadioButton < MechanizeCurl::TestCase
 
   def setup
     super
@@ -28,7 +28,7 @@ class TestMechanizeFormRadioButton < Mechanize::TestCase
     @red    = @form.radiobutton_with :value => 'red'
     @yellow = @form.radiobutton_with :id    => 'a'
   end
-  
+
   def test_check
     @blue.check
 

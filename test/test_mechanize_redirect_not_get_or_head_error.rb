@@ -1,12 +1,12 @@
 # frozen_string_literal: true
-require 'mechanize/test_case'
+require 'mechanize_curl/test_case'
 
-class TestMechanizeRedirectNotGetOrHead < Mechanize::TestCase
+class TestMechanizeRedirectNotGetOrHead < MechanizeCurl::TestCase
 
   def test_to_s
     page = fake_page
 
-    error = Mechanize::RedirectNotGetOrHeadError.new(page, :put)
+    error = MechanizeCurl::RedirectNotGetOrHeadError.new(page, :put)
 
     assert_match(/ PUT /, error.to_s)
   end

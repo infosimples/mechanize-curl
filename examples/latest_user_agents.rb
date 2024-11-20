@@ -1,4 +1,4 @@
-require 'mechanize'
+require 'mechanize-curl'
 require 'ostruct'
 
 # LatestUAFetcher fetches latest user agents from `WhatIsMyBrowser.com`.
@@ -21,7 +21,7 @@ class LatestUAFetcher
   BASE_URL = 'https://www.whatismybrowser.com/guides/the-latest-user-agent'
 
   def initialize
-    @agent = Mechanize.new.tap { |a| a.user_agent_alias = 'Mac Firefox' }
+    @agent = MechanizeCurl.new.tap { |a| a.user_agent_alias = 'Mac Firefox' }
     @user_agents = {}
   end
 

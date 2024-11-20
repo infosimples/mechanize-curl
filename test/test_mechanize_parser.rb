@@ -1,10 +1,10 @@
 # frozen_string_literal: true
-require 'mechanize/test_case'
+require 'mechanize_curl/test_case'
 
-class TestMechanizeParser < Mechanize::TestCase
+class TestMechanizeParser < MechanizeCurl::TestCase
 
   class P
-    include Mechanize::Parser
+    include MechanizeCurl::Parser
 
     attr_accessor :filename
     attr_accessor :response

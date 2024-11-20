@@ -1,7 +1,7 @@
 # frozen_string_literal: true
-require 'mechanize/test_case'
+require 'mechanize_curl/test_case'
 
-class TestMechanizeFormKeygen < Mechanize::TestCase
+class TestMechanizeFormKeygen < MechanizeCurl::TestCase
 
   def setup
     super
@@ -10,7 +10,7 @@ class TestMechanizeFormKeygen < Mechanize::TestCase
                   'name' => 'userkey',
                   'challenge' => 'f4832e1d200df3df8c5c859edcabe52f')
 
-    @keygen = Mechanize::Form::Keygen.new keygen
+    @keygen = MechanizeCurl::Form::Keygen.new keygen
   end
 
   def test_challenge

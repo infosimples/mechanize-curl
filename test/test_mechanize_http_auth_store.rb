@@ -1,14 +1,14 @@
 # coding: utf-8
 # frozen_string_literal: true
 
-require 'mechanize/test_case'
+require 'mechanize_curl/test_case'
 
-class TestMechanizeHttpAuthStore < Mechanize::TestCase
+class TestMechanizeHttpAuthStore < MechanizeCurl::TestCase
 
   def setup
     super
 
-    @store = Mechanize::HTTP::AuthStore.new
+    @store = MechanizeCurl::HTTP::AuthStore.new
 
     @uri = URI.parse 'http://example/'
   end
@@ -106,8 +106,8 @@ class TestMechanizeHttpAuthStore < Mechanize::TestCase
 
   def test_credentials_eh
     challenges = [
-      Mechanize::HTTP::AuthChallenge.new('Basic',  'realm' => 'r'),
-      Mechanize::HTTP::AuthChallenge.new('Digest', 'realm' => 'r'),
+      MechanizeCurl::HTTP::AuthChallenge.new('Basic',  'realm' => 'r'),
+      MechanizeCurl::HTTP::AuthChallenge.new('Digest', 'realm' => 'r'),
     ]
 
     refute @store.credentials? @uri, challenges

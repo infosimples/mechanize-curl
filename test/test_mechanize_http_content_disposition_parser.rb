@@ -1,12 +1,12 @@
 # frozen_string_literal: true
-require 'mechanize/test_case'
+require 'mechanize_curl/test_case'
 
-class TestMechanizeHttpContentDispositionParser < Mechanize::TestCase
+class TestMechanizeHttpContentDispositionParser < MechanizeCurl::TestCase
 
   def setup
     super
 
-    @parser = Mechanize::HTTP::ContentDispositionParser.new
+    @parser = MechanizeCurl::HTTP::ContentDispositionParser.new
   end
 
   def test_parse

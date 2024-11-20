@@ -1,7 +1,7 @@
 # frozen_string_literal: true
-require 'mechanize/test_case'
+require 'mechanize_curl/test_case'
 
-class TestMechanizePage < Mechanize::TestCase
+class TestMechanizePage < MechanizeCurl::TestCase
 
   def setup
     super
@@ -46,7 +46,7 @@ class TestMechanizePage < Mechanize::TestCase
   end
 
   def test_initialize_good_content_type
-    page = Mechanize::Page.new
+    page = MechanizeCurl::Page.new
     assert_equal('text/html', page.content_type)
 
     [
@@ -59,7 +59,7 @@ class TestMechanizePage < Mechanize::TestCase
       'application/xhtml+xml; charset=UTF-8',
       'application/xhtml+xml ; charset=US-ASCII',
     ].each { |content_type|
-      page = Mechanize::Page.new(URI('http://example/'),
+      page = MechanizeCurl::Page.new(URI('http://example/'),
         { 'content-type' => content_type }, 'hello', '200')
 
       assert_equal(content_type, page.content_type, content_type)
@@ -75,7 +75,7 @@ class TestMechanizePage < Mechanize::TestCase
       'application/xhtml+xmlfu',
       'fooapplication/xhtml+xml',
     ].each { |content_type|
-      page = Mechanize::Page.new(URI('http://example/'),
+      page = MechanizeCurl::Page.new(URI('http://example/'),
         { 'content-type' => content_type }, 'hello', '200')
 
       assert_equal(content_type, page.content_type, content_type)

@@ -1,12 +1,12 @@
 # frozen_string_literal: true
-require 'mechanize/test_case'
+require 'mechanize_curl/test_case'
 
-class TestMechanizeRedirectLimitReachedError < Mechanize::TestCase
+class TestMechanizeRedirectLimitReachedError < MechanizeCurl::TestCase
 
   def setup
     super
 
-    @error = Mechanize::RedirectLimitReachedError.new fake_page, 10
+    @error = MechanizeCurl::RedirectLimitReachedError.new fake_page, 10
   end
 
   def test_message

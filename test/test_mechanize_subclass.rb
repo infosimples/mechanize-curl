@@ -1,7 +1,7 @@
 # frozen_string_literal: true
-require 'mechanize/test_case'
+require 'mechanize_curl/test_case'
 
-class TestMechanizeSubclass < Mechanize::TestCase
+class TestMechanizeSubclass < MechanizeCurl::TestCase
 
   class Parent < Mechanize
     @html_parser = :parser

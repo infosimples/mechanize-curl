@@ -1,7 +1,7 @@
 # frozen_string_literal: true
-require 'mechanize/test_case'
+require 'mechanize_curl/test_case'
 
-class TestMechanizeForm < Mechanize::TestCase
+class TestMechanizeForm < MechanizeCurl::TestCase
 
   def setup
     super
@@ -9,17 +9,17 @@ class TestMechanizeForm < Mechanize::TestCase
     @uri = URI 'http://example'
     @page = page @uri
 
-    @form = Mechanize::Form.new node('form', 'name' => @NAME), @mech, @page
+    @form = MechanizeCurl::Form.new node('form', 'name' => @NAME), @mech, @page
   end
 
   def test_action
-    form = Mechanize::Form.new node('form', 'action' => '?a=b&amp;b=c')
+    form = MechanizeCurl::Form.new node('form', 'action' => '?a=b&amp;b=c')
 
     assert_equal '?a=b&b=c', form.action
   end
 
   def test_add_button_to_query
-    button = Mechanize::Form::Button.new node('input', 'type' => 'submit')
+    button = MechanizeCurl::Form::Button.new node('input', 'type' => 'submit')
 
     e = assert_raises ArgumentError do
       @form.add_button_to_query button
@@ -73,7 +73,7 @@ class TestMechanizeForm < Mechanize::TestCase
 </form>
     HTML
 
-    form = Mechanize::Form.new html.at('form'), @mech, @page
+    form = MechanizeCurl::Form.new html.at('form'), @mech, @page
 
     assert_equal [], form.build_query
   end
@@ -86,7 +86,7 @@ class TestMechanizeForm < Mechanize::TestCase
 </form>
     HTML
 
-    form = Mechanize::Form.new html.at('form'), @mech, @page
+    form = MechanizeCurl::Form.new html.at('form'), @mech, @page
 
     query = form.build_query
 
@@ -101,9 +101,9 @@ class TestMechanizeForm < Mechanize::TestCase
 </form>
     HTML
 
-    form = Mechanize::Form.new html.at('form'), @mech, @page
+    form = MechanizeCurl::Form.new html.at('form'), @mech, @page
 
-    e = assert_raises Mechanize::Error do
+    e = assert_raises MechanizeCurl::Error do
       form.build_query
     end
 
@@ -153,7 +153,7 @@ class TestMechanizeForm < Mechanize::TestCase
     form = page.forms.first
     buttons = form.buttons.sort
 
-    assert buttons.all? { |b| Mechanize::Form::Button === b }
+    assert buttons.all? { |b| MechanizeCurl::Form::Button === b }
 
     assert_equal 'submit', buttons.shift.type
     assert_equal 'button', buttons.shift.type
@@ -177,10 +177,10 @@ class TestMechanizeForm < Mechanize::TestCase
     selects = form.fields.sort
 
     multi = selects.shift
-    assert_kind_of Mechanize::Form::MultiSelectList, multi
+    assert_kind_of MechanizeCurl::Form::MultiSelectList, multi
 
     single = selects.shift
-    assert_kind_of Mechanize::Form::SelectList, single
+    assert_kind_of MechanizeCurl::Form::SelectList, single
 
     assert_empty selects
   end
@@ -253,10 +253,10 @@ class TestMechanizeForm < Mechanize::TestCase
 </form>
     FORM
 
-    form = Mechanize::Form.new form, @mech
+    form = MechanizeCurl::Form.new form, @mech
     textarea = form.fields.first
 
-    assert_kind_of Mechanize::Form::Textarea, textarea
+    assert_kind_of MechanizeCurl::Form::Textarea, textarea
     assert_equal 'hi', textarea.value
   end
 
@@ -944,8 +944,8 @@ class TestMechanizeForm < Mechanize::TestCase
     begin
       page.form_with!(:name => 'no form') { |f| f.foo = 'bar' }
     rescue => e
-      assert_instance_of Mechanize::ElementNotFoundError, e
-      assert_kind_of Mechanize::Page, e.source
+      assert_instance_of MechanizeCurl::ElementNotFoundError, e
+      assert_kind_of MechanizeCurl::Page, e.source
       assert_equal :form, e.element
       assert_kind_of Hash, e.conditions
       assert_equal 'no form', e.conditions[:name]
@@ -1011,11 +1011,11 @@ class TestMechanizeForm < Mechanize::TestCase
   def test_form_built_from_hashes_submit
     uri = URI 'http://example/form_post'
     page = page uri
-    form = Mechanize::Form.new node('form', 'name' => @NAME, 'method' => 'POST'), @mech, page
-    form.fields << Mechanize::Form::Field.new({'name' => 'order_matters'}, '0')
-    form.fields << Mechanize::Form::Field.new({'name' => 'order_matters'}, '1')
-    form.fields << Mechanize::Form::Field.new({'name' => 'order_matters'}, '2')
-    form.fields << Mechanize::Form::Field.new({'name' => 'mess_it_up'}, 'asdf')
+    form = MechanizeCurl::Form.new node('form', 'name' => @NAME, 'method' => 'POST'), @mech, page
+    form.fields << MechanizeCurl::Form::Field.new({'name' => 'order_matters'}, '0')
+    form.fields << MechanizeCurl::Form::Field.new({'name' => 'order_matters'}, '1')
+    form.fields << MechanizeCurl::Form::Field.new({'name' => 'order_matters'}, '2')
+    form.fields << MechanizeCurl::Form::Field.new({'name' => 'mess_it_up'}, 'asdf')
 
     submitted = @mech.submit form
 

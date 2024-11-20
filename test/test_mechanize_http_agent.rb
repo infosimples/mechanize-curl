@@ -1,13 +1,13 @@
 # coding: utf-8
 # frozen_string_literal: true
 
-require 'mechanize/test_case'
+require 'mechanize_curl/test_case'
 unless RUBY_PLATFORM == 'java'
   require 'brotli'
   require 'zstd-ruby'
 end
 
-class TestMechanizeHttpAgent < Mechanize::TestCase
+class TestMechanizeHttpAgent < MechanizeCurl::TestCase
 
   def setup
     super
@@ -26,7 +26,7 @@ class TestMechanizeHttpAgent < Mechanize::TestCase
 
   def auth_realm uri, scheme, type
     base_uri = uri + '/'
-    realm = Mechanize::HTTP::AuthRealm.new scheme, base_uri, 'r'
+    realm = MechanizeCurl::HTTP::AuthRealm.new scheme, base_uri, 'r'
     @agent.authenticate_methods[base_uri][type] << realm
 
     realm
@@ -40,8 +40,8 @@ class TestMechanizeHttpAgent < Mechanize::TestCase
   end
 
   def test_agent_is_named
-    assert_equal 'mechanize', Mechanize::HTTP::Agent.new.http.name
-    assert_equal 'unique', Mechanize::HTTP::Agent.new('unique').http.name
+    assert_equal 'mechanize', MechanizeCurl::HTTP::Agent.new.http.name
+    assert_equal 'unique', MechanizeCurl::HTTP::Agent.new('unique').http.name
   end
 
   def test_auto_io
@@ -130,7 +130,7 @@ class TestMechanizeHttpAgent < Mechanize::TestCase
     uri = URI.parse 'file:///nonexistent'
     conn = @agent.connection_for uri
 
-    assert_equal Mechanize::FileConnection.new, conn
+    assert_equal MechanizeCurl::FileConnection.new, conn
   end
 
   def test_connection_for_http
@@ -173,7 +173,7 @@ class TestMechanizeHttpAgent < Mechanize::TestCase
 
       uri = URI.parse "file:///#{nonexistent}"
 
-      e = assert_raises Mechanize::ResponseCodeError do
+      e = assert_raises MechanizeCurl::ResponseCodeError do
         @agent.fetch uri
       end
 
@@ -187,24 +187,24 @@ class TestMechanizeHttpAgent < Mechanize::TestCase
       io.write content
       io.rewind
 
-      uri = URI.parse "file://#{Mechanize::Util.uri_escape io.path}"
+      uri = URI.parse "file://#{MechanizeCurl::Util.uri_escape io.path}"
 
       page = @agent.fetch uri
 
       assert_equal content, page.body
-      assert_kind_of Mechanize::File, page
+      assert_kind_of MechanizeCurl::File, page
     end
   end
 
   def test_fetch_file_space
     foo = File.expand_path("../htdocs/dir with spaces/foo.html", __FILE__)
 
-    uri = URI.parse "file://#{Mechanize::Util.uri_escape foo}"
+    uri = URI.parse "file://#{MechanizeCurl::Util.uri_escape foo}"
 
     page = @agent.fetch uri
 
     assert_equal File.read(foo), page.body.gsub(/\r\n/, "\n")
-    assert_kind_of Mechanize::Page, page
+    assert_kind_of MechanizeCurl::Page, page
   end
 
   def test_fetch_head_gzip
@@ -212,7 +212,7 @@ class TestMechanizeHttpAgent < Mechanize::TestCase
 
     page = @agent.fetch uri, :head
 
-    assert_kind_of Mechanize::Page, page
+    assert_kind_of MechanizeCurl::Page, page
   end
 
   def test_fetch_hooks
@@ -257,7 +257,7 @@ class TestMechanizeHttpAgent < Mechanize::TestCase
   end
 
   def test_fetch_server_error
-    e = assert_raises Mechanize::ResponseCodeError do
+    e = assert_raises MechanizeCurl::ResponseCodeError do
       @mech.get 'http://localhost/response_code?code=500'
     end
 
@@ -284,7 +284,7 @@ class TestMechanizeHttpAgent < Mechanize::TestCase
     @agent.follow_meta_refresh = true
     @agent.follow_meta_refresh_self = true
 
-    page = Mechanize::Page.new(@uri, nil, '', 200, @mech)
+    page = MechanizeCurl::Page.new(@uri, nil, '', 200, @mech)
     @res.instance_variable_set :@header, 'refresh' => ['0']
 
     refresh = @agent.get_meta_refresh @res, @uri, page
@@ -293,7 +293,7 @@ class TestMechanizeHttpAgent < Mechanize::TestCase
   end
 
   def test_get_meta_refresh_header_no_follow
-    page = Mechanize::Page.new(@uri, nil, '', 200, @mech)
+    page = MechanizeCurl::Page.new(@uri, nil, '', 200, @mech)
     @res.instance_variable_set :@header, 'refresh' => ['0']
 
     refresh = @agent.get_meta_refresh @res, @uri, page
@@ -304,7 +304,7 @@ class TestMechanizeHttpAgent < Mechanize::TestCase
   def test_get_meta_refresh_header_no_follow_self
     @agent.follow_meta_refresh = true
 
-    page = Mechanize::Page.new(@uri, nil, '', 200, @mech)
+    page = MechanizeCurl::Page.new(@uri, nil, '', 200, @mech)
     @res.instance_variable_set :@header, 'refresh' => ['0']
 
     refresh = @agent.get_meta_refresh @res, @uri, page
@@ -321,7 +321,7 @@ class TestMechanizeHttpAgent < Mechanize::TestCase
 <meta http-equiv="refresh" content="0">
     BODY
 
-    page = Mechanize::Page.new(@uri, nil, body, 200, @mech)
+    page = MechanizeCurl::Page.new(@uri, nil, body, 200, @mech)
 
     refresh = @agent.get_meta_refresh @res, @uri, page
 
@@ -334,7 +334,7 @@ class TestMechanizeHttpAgent < Mechanize::TestCase
 <meta http-equiv="refresh" content="0">
     BODY
 
-    page = Mechanize::Page.new(@uri, nil, body, 200, @mech)
+    page = MechanizeCurl::Page.new(@uri, nil, body, 200, @mech)
 
     refresh = @agent.get_meta_refresh @res, @uri, page
 
@@ -349,7 +349,7 @@ class TestMechanizeHttpAgent < Mechanize::TestCase
 <meta http-equiv="refresh" content="0">
     BODY
 
-    page = Mechanize::Page.new(@uri, nil, body, 200, @mech)
+    page = MechanizeCurl::Page.new(@uri, nil, body, 200, @mech)
 
     refresh = @agent.get_meta_refresh @res, @uri, page
 
@@ -379,7 +379,7 @@ class TestMechanizeHttpAgent < Mechanize::TestCase
     uri = URI.parse 'file:///nonexistent'
     request = @agent.http_request uri, :get
 
-    assert_kind_of Mechanize::FileRequest, request
+    assert_kind_of MechanizeCurl::FileRequest, request
     assert_equal '/nonexistent', request.path
   end
 
@@ -661,7 +661,7 @@ class TestMechanizeHttpAgent < Mechanize::TestCase
   def test_request_user_agent
     @agent.request_user_agent @req
 
-    assert_match %r%^Mechanize/#{Mechanize::VERSION}%, @req['user-agent']
+    assert_match %r%^Mechanize/#{MechanizeCurl::VERSION}%, @req['user-agent']
 
     ruby_version = if RUBY_PATCHLEVEL >= 0 then
                      "#{RUBY_VERSION}p#{RUBY_PATCHLEVEL}"
@@ -723,7 +723,7 @@ class TestMechanizeHttpAgent < Mechanize::TestCase
   end
 
   def test_resolve_slashes
-    page = Mechanize::Page.new URI('http://example/foo/'), nil, '', 200, @mech
+    page = MechanizeCurl::Page.new URI('http://example/foo/'), nil, '', 200, @mech
     uri = '/bar/http://example/test/'
 
     resolved = @agent.resolve uri, page
@@ -739,7 +739,7 @@ class TestMechanizeHttpAgent < Mechanize::TestCase
     @agent.response_authenticate @res, nil, @uri, @req, {}, nil, nil
 
     base_uri = @uri + '/'
-    realm = Mechanize::HTTP::AuthRealm.new 'Basic', base_uri, 'r'
+    realm = MechanizeCurl::HTTP::AuthRealm.new 'Basic', base_uri, 'r'
     assert_equal [realm], @agent.authenticate_methods[base_uri][:basic]
   end
 
@@ -752,10 +752,10 @@ class TestMechanizeHttpAgent < Mechanize::TestCase
     @agent.response_authenticate @res, nil, @uri, @req, {}, nil, nil
 
     base_uri = @uri + '/'
-    realm = Mechanize::HTTP::AuthRealm.new 'Digest', base_uri, 'r'
+    realm = MechanizeCurl::HTTP::AuthRealm.new 'Digest', base_uri, 'r'
     assert_equal [realm], @agent.authenticate_methods[base_uri][:digest]
 
-    challenge = Mechanize::HTTP::AuthChallenge.new('Digest',
+    challenge = MechanizeCurl::HTTP::AuthChallenge.new('Digest',
                                                    { 'realm' => 'r' },
                                                    'Digest realm=r')
 
@@ -771,7 +771,7 @@ class TestMechanizeHttpAgent < Mechanize::TestCase
     @agent.response_authenticate @res, nil, @uri, @req, {}, nil, nil
 
     base_uri = @uri + '/'
-    realm = Mechanize::HTTP::AuthRealm.new 'Digest', base_uri, 'r'
+    realm = MechanizeCurl::HTTP::AuthRealm.new 'Digest', base_uri, 'r'
     assert_equal [realm], @agent.authenticate_methods[base_uri][:iis_digest]
   end
 
@@ -785,7 +785,7 @@ class TestMechanizeHttpAgent < Mechanize::TestCase
     @agent.response_authenticate @res, nil, @uri, @req, {}, nil, nil
 
     base_uri = @uri + '/'
-    realm = Mechanize::HTTP::AuthRealm.new 'Digest', base_uri, 'r'
+    realm = MechanizeCurl::HTTP::AuthRealm.new 'Digest', base_uri, 'r'
     assert_equal [realm], @agent.authenticate_methods[base_uri][:digest]
 
     assert_empty @agent.authenticate_methods[base_uri][:basic]
@@ -794,7 +794,7 @@ class TestMechanizeHttpAgent < Mechanize::TestCase
   def test_response_authenticate_no_credentials
     @res.instance_variable_set :@header, 'www-authenticate' => ['Basic realm=r']
 
-    e = assert_raises Mechanize::UnauthorizedError do
+    e = assert_raises MechanizeCurl::UnauthorizedError do
       @agent.response_authenticate @res, fake_page, @uri, @req, {}, nil, nil
     end
 
@@ -809,7 +809,7 @@ class TestMechanizeHttpAgent < Mechanize::TestCase
 
     denied = page denied_uri, 'text/html', '', 401
 
-    e = assert_raises Mechanize::UnauthorizedError do
+    e = assert_raises MechanizeCurl::UnauthorizedError do
       @agent.response_authenticate @res, denied, @uri, @req, {}, nil, nil
     end
 
@@ -837,11 +837,11 @@ class TestMechanizeHttpAgent < Mechanize::TestCase
   def test_response_authenticate_unknown
     @agent.add_auth @uri, 'user', 'password'
 
-    page = Mechanize::File.new nil, nil, nil, 401
+    page = MechanizeCurl::File.new nil, nil, nil, 401
     @res.instance_variable_set(:@header,
                                'www-authenticate' => ['Unknown realm=r'])
 
-    assert_raises Mechanize::UnauthorizedError do
+    assert_raises MechanizeCurl::UnauthorizedError do
       @agent.response_authenticate @res, page, @uri, @req, nil, nil, nil
     end
   end
@@ -878,7 +878,7 @@ class TestMechanizeHttpAgent < Mechanize::TestCase
     @res.instance_variable_set :@header, 'content-encoding' => %w[deflate]
     body_io = StringIO.new "x\x9C+H,*\x01\x00\x04?\x01" # missing 1 byte
 
-    e = assert_raises Mechanize::Error do
+    e = assert_raises MechanizeCurl::Error do
       @agent.response_content_encoding @res, body_io
     end
 
@@ -934,7 +934,7 @@ class TestMechanizeHttpAgent < Mechanize::TestCase
     @res.instance_variable_set :@header, 'content-encoding' => %w[br]
     body_io = StringIO.new("content doesn't matter for this test")
 
-    e = assert_raises(Mechanize::Error) do
+    e = assert_raises(MechanizeCurl::Error) do
       @agent.response_content_encoding(@res, body_io)
     end
     assert_includes(e.message, "cannot deflate brotli-encoded response")
@@ -960,7 +960,7 @@ class TestMechanizeHttpAgent < Mechanize::TestCase
     @res.instance_variable_set :@header, 'content-encoding' => %w[br]
     body_io = StringIO.new("not a brotli payload")
 
-    e = assert_raises(Mechanize::Error) do
+    e = assert_raises(MechanizeCurl::Error) do
       @agent.response_content_encoding(@res, body_io)
     end
     assert_includes(e.message, "error inflating brotli-encoded response")
@@ -974,7 +974,7 @@ class TestMechanizeHttpAgent < Mechanize::TestCase
     @res.instance_variable_set :@header, 'content-encoding' => %w[zstd]
     body_io = StringIO.new("content doesn't matter for this test")
 
-    e = assert_raises(Mechanize::Error) do
+    e = assert_raises(MechanizeCurl::Error) do
       @agent.response_content_encoding(@res, body_io)
     end
     assert_includes(e.message, 'cannot deflate zstd-encoded response')
@@ -1000,7 +1000,7 @@ class TestMechanizeHttpAgent < Mechanize::TestCase
     @res.instance_variable_set :@header, 'content-encoding' => %w[zstd]
     body_io = StringIO.new('not a zstd payload')
 
-    e = assert_raises(Mechanize::Error) do
+    e = assert_raises(MechanizeCurl::Error) do
       @agent.response_content_encoding(@res, body_io)
     end
     assert_includes(e.message, 'error decompressing zstd-encoded response')
@@ -1019,7 +1019,7 @@ class TestMechanizeHttpAgent < Mechanize::TestCase
 
     skip_if_jruby_zlib
 
-    e = assert_raises Mechanize::Error do
+    e = assert_raises MechanizeCurl::Error do
       @agent.response_content_encoding @res, body_io
     end
 
@@ -1192,7 +1192,7 @@ class TestMechanizeHttpAgent < Mechanize::TestCase
     @res.instance_variable_set :@header, 'content-encoding' => %w[unknown]
     body = StringIO.new 'part'
 
-    e = assert_raises Mechanize::Error do
+    e = assert_raises MechanizeCurl::Error do
       @agent.response_content_encoding @res, body
     end
 
@@ -1215,7 +1215,7 @@ class TestMechanizeHttpAgent < Mechanize::TestCase
     @res.instance_variable_set(:@header,
                                'set-cookie' => [cookie_str],
                                'content-type' => %w[text/html])
-    page = Mechanize::Page.new uri, @res, '', 200, @mech
+    page = MechanizeCurl::Page.new uri, @res, '', 200, @mech
 
     @agent.response_cookies @res, uri, page
 
@@ -1231,7 +1231,7 @@ class TestMechanizeHttpAgent < Mechanize::TestCase
     @res.instance_variable_set(:@header,
                                'set-cookie' => cookies,
                                'content-type' => %w[text/html])
-    page = Mechanize::Page.new uri, @res, '', 200, @mech
+    page = MechanizeCurl::Page.new uri, @res, '', 200, @mech
 
     @agent.response_cookies @res, uri, page
 
@@ -1256,7 +1256,7 @@ class TestMechanizeHttpAgent < Mechanize::TestCase
 
     @res.instance_variable_set(:@header,
                                'content-type' => %w[text/html])
-    page = Mechanize::Page.new uri, @res, body, 200, @mech
+    page = MechanizeCurl::Page.new uri, @res, body, 200, @mech
 
     @agent.response_cookies @res, uri, page
 
@@ -1275,7 +1275,7 @@ class TestMechanizeHttpAgent < Mechanize::TestCase
 
     @res.instance_variable_set(:@header,
                                'content-type' => %w[text/html])
-    page = Mechanize::Page.new uri, @res, body, 200, @mech
+    page = MechanizeCurl::Page.new uri, @res, body, 200, @mech
 
     @agent.response_cookies @res, uri, page
 
@@ -1290,7 +1290,7 @@ class TestMechanizeHttpAgent < Mechanize::TestCase
 <meta http-equiv="refresh" content="0">
     BODY
 
-    page = Mechanize::Page.new(uri, nil, body, 200, @mech)
+    page = MechanizeCurl::Page.new(uri, nil, body, 200, @mech)
 
     @agent.follow_meta_refresh = true
     @agent.follow_meta_refresh_self = true
@@ -1308,12 +1308,12 @@ class TestMechanizeHttpAgent < Mechanize::TestCase
 <meta http-equiv="refresh" content="0">
     BODY
 
-    page = Mechanize::Page.new(uri, nil, body, 200, @mech)
+    page = MechanizeCurl::Page.new(uri, nil, body, 200, @mech)
 
     @agent.follow_meta_refresh = true
     @agent.follow_meta_refresh_self = true
 
-    assert_raises Mechanize::RedirectLimitReachedError do
+    assert_raises MechanizeCurl::RedirectLimitReachedError do
       @agent.response_follow_meta_refresh(@res, uri, page,
                                           @agent.redirection_limit)
     end
@@ -1327,11 +1327,11 @@ class TestMechanizeHttpAgent < Mechanize::TestCase
 <meta http-equiv="refresh" content="0; url=file:///dev/zero">
     BODY
 
-    page = Mechanize::Page.new(uri, nil, body, 200, @mech)
+    page = MechanizeCurl::Page.new(uri, nil, body, 200, @mech)
 
     @agent.follow_meta_refresh = true
 
-    assert_raises Mechanize::Error do
+    assert_raises MechanizeCurl::Error do
       @agent.response_follow_meta_refresh(@res, uri, page,
                                           @agent.redirection_limit)
     end
@@ -1343,7 +1343,7 @@ class TestMechanizeHttpAgent < Mechanize::TestCase
 
     page = @agent.response_parse @res, body, @uri
 
-    assert_instance_of Mechanize::Page, page
+    assert_instance_of MechanizeCurl::Page, page
     assert_equal @mech, page.mech
   end
 
@@ -1353,7 +1353,7 @@ class TestMechanizeHttpAgent < Mechanize::TestCase
 
     page = @agent.response_parse @res, body, @uri
 
-    assert_instance_of Mechanize::Page, page
+    assert_instance_of MechanizeCurl::Page, page
 
     assert_equal 'text/HTML', page.content_type
   end
@@ -1366,7 +1366,7 @@ class TestMechanizeHttpAgent < Mechanize::TestCase
 
     page = @agent.response_parse @res, body, @uri
 
-    assert_instance_of Mechanize::Page, page
+    assert_instance_of MechanizeCurl::Page, page
     assert_equal @mech, page.mech
 
     assert_equal 'ISO-8859-1', page.encoding
@@ -1381,7 +1381,7 @@ class TestMechanizeHttpAgent < Mechanize::TestCase
 
     page = @agent.response_parse @res, body, @uri
 
-    assert_instance_of Mechanize::Page, page
+    assert_instance_of MechanizeCurl::Page, page
     assert_equal 'ISO_8859-1', page.encoding
   end
 
@@ -1393,7 +1393,7 @@ class TestMechanizeHttpAgent < Mechanize::TestCase
 
     page = @agent.response_parse @res, body, @uri
 
-    assert_instance_of Mechanize::Page, page
+    assert_instance_of MechanizeCurl::Page, page
 
     # as of libxml 2.12.0, the result is dependent on how libiconv is built (which aliases are supported)
     # if the alias "UTF8" is defined, then the result will be "UTF-8".
@@ -1411,7 +1411,7 @@ class TestMechanizeHttpAgent < Mechanize::TestCase
 
     page = @agent.response_parse @res, body, @uri
 
-    assert_instance_of Mechanize::Page, page
+    assert_instance_of MechanizeCurl::Page, page
     assert_equal @mech, page.mech
   end
 
@@ -1423,7 +1423,7 @@ class TestMechanizeHttpAgent < Mechanize::TestCase
 
     page = @agent.response_parse @res, body, @uri
 
-    assert_instance_of Mechanize::Page, page
+    assert_instance_of MechanizeCurl::Page, page
 
     assert_equal 'UTF-8', page.encoding
   end
@@ -1448,7 +1448,7 @@ class TestMechanizeHttpAgent < Mechanize::TestCase
       raise EOFError
     end
 
-    e = assert_raises Mechanize::ChunkedTerminationError do
+    e = assert_raises MechanizeCurl::ChunkedTerminationError do
       @agent.response_read @res, @req, @uri
     end
 
@@ -1470,12 +1470,12 @@ class TestMechanizeHttpAgent < Mechanize::TestCase
     def @res.content_length() 5 end
     def @res.read_body() yield 'part' end
 
-    e = assert_raises Mechanize::ResponseReadError do
+    e = assert_raises MechanizeCurl::ResponseReadError do
       @agent.response_read @res, @req, @uri
     end
 
     assert_equal 'Content-Length (5) does not match response body length (4)' \
-      ' (Mechanize::ResponseReadError)', e.message
+      ' (MechanizeCurl::ResponseReadError)', e.message
   end
 
   def test_response_read_content_length_redirect
@@ -1496,7 +1496,7 @@ class TestMechanizeHttpAgent < Mechanize::TestCase
       raise Net::HTTP::Persistent::Error
     end
 
-    e = assert_raises Mechanize::ResponseReadError do
+    e = assert_raises MechanizeCurl::ResponseReadError do
       @agent.response_read @res, @req, @uri
     end
 
@@ -1512,8 +1512,8 @@ class TestMechanizeHttpAgent < Mechanize::TestCase
       tempfile.rewind
 
       uri = URI.parse "file://#{tempfile.path}"
-      req = Mechanize::FileRequest.new uri
-      res = Mechanize::FileResponse.new tempfile.path
+      req = MechanizeCurl::FileRequest.new uri
+      res = MechanizeCurl::FileResponse.new tempfile.path
 
       io = @agent.response_read res, req, uri
 
@@ -1572,7 +1572,7 @@ class TestMechanizeHttpAgent < Mechanize::TestCase
     res.instance_variable_set :@header, {}
     def res.read_body() yield 'part' end
 
-    e = assert_raises Mechanize::ResponseCodeError do
+    e = assert_raises MechanizeCurl::ResponseCodeError do
       @agent.response_read res, @req, @uri
     end
 
@@ -1632,7 +1632,7 @@ class TestMechanizeHttpAgent < Mechanize::TestCase
     @agent.redirect_ok = true
     referer = page 'http://example/referer'
 
-    assert_raises Mechanize::Error do
+    assert_raises MechanizeCurl::Error do
       @agent.response_redirect({ 'Location' => 'file:///etc/passwd' }, :get,
                                fake_page, 0, {}, referer)
     end
@@ -1642,7 +1642,7 @@ class TestMechanizeHttpAgent < Mechanize::TestCase
     @agent.redirect_ok = true
     referer = page 'http://example/referer'
 
-    assert_raises Mechanize::RedirectLimitReachedError do
+    assert_raises MechanizeCurl::RedirectLimitReachedError do
       @agent.response_redirect({ 'Location' => '/index.html' }, :get,
                                fake_page, @agent.redirection_limit, {}, referer)
     end
@@ -1776,7 +1776,7 @@ class TestMechanizeHttpAgent < Mechanize::TestCase
 
     assert @agent.robots_allowed? noindex
 
-    assert_raises Mechanize::RobotsDisallowedError do
+    assert_raises MechanizeCurl::RobotsDisallowedError do
       @agent.fetch noindex
     end
   end
@@ -1785,7 +1785,7 @@ class TestMechanizeHttpAgent < Mechanize::TestCase
     @agent.robots = true
     @agent.redirect_ok = true
 
-    assert_raises Mechanize::RobotsDisallowedError do
+    assert_raises MechanizeCurl::RobotsDisallowedError do
       @agent.fetch URI('http://301/norobots.html')
     end
 
@@ -1864,7 +1864,7 @@ class TestMechanizeHttpAgent < Mechanize::TestCase
   end
 
   def test_setting_agent_name
-    mech = Mechanize.new 'user-set-name'
+    mech = MechanizeCurl.new 'user-set-name'
     assert_equal 'user-set-name', mech.agent.http.name
   end
 

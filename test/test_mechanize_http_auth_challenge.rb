@@ -1,14 +1,14 @@
 # frozen_string_literal: true
-require 'mechanize/test_case'
+require 'mechanize_curl/test_case'
 
-class TestMechanizeHttpAuthChallenge < Mechanize::TestCase
+class TestMechanizeHttpAuthChallenge < MechanizeCurl::TestCase
 
   def setup
     super
 
     @uri = URI 'http://example/'
-    @AR = Mechanize::HTTP::AuthRealm
-    @AC = Mechanize::HTTP::AuthChallenge
+    @AR = MechanizeCurl::HTTP::AuthRealm
+    @AC = MechanizeCurl::HTTP::AuthChallenge
     @challenge = @AC.new 'Digest', { 'realm' => 'r' }, 'Digest realm=r'
   end
 
@@ -37,7 +37,7 @@ class TestMechanizeHttpAuthChallenge < Mechanize::TestCase
   def test_realm_unknown
     @challenge.scheme = 'Unknown'
 
-    e = assert_raises Mechanize::Error do
+    e = assert_raises MechanizeCurl::Error do
       @challenge.realm(@uri + '/foo')
     end
 

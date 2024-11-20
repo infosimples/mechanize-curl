@@ -1,7 +1,7 @@
 # frozen_string_literal: true
-require 'mechanize/test_case'
+require 'mechanize_curl/test_case'
 
-class TestMechanizeFileSaver < Mechanize::TestCase
+class TestMechanizeFileSaver < MechanizeCurl::TestCase
 
   def setup
     super
@@ -12,7 +12,7 @@ class TestMechanizeFileSaver < Mechanize::TestCase
 
   def test_initialize
     in_tmpdir do
-      Mechanize::FileSaver.new @uri, nil, @io, 200
+      MechanizeCurl::FileSaver.new @uri, nil, @io, 200
 
       assert File.exist? 'example/index.html'
     end

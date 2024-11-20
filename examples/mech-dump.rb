@@ -1,5 +1,5 @@
 require 'rubygems'
-require 'mechanize'
+require 'mechanize-curl'
 
-agent = Mechanize.new
+agent = MechanizeCurl.new
 puts agent.get(ARGV[0]).inspect

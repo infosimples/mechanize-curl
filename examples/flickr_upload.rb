@@ -1,7 +1,7 @@
 require 'rubygems'
-require 'mechanize'
+require 'mechanize-curl'
 
-agent = Mechanize.new
+agent = MechanizeCurl.new
 
 # Get the flickr sign in page
 page  = agent.get 'http://flickr.com/signin/flickr/'

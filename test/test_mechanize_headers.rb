@@ -1,11 +1,11 @@
 # frozen_string_literal: true
-require 'mechanize/test_case'
+require 'mechanize_curl/test_case'
 
-class TestMechanizeHeaders < Mechanize::TestCase
+class TestMechanizeHeaders < MechanizeCurl::TestCase
   def setup
     super
 
-    @headers = Mechanize::Headers.new
+    @headers = MechanizeCurl::Headers.new
     @headers['content-type'] = 'text/html'
     @headers['Content-encoding'] = 'gzip'
     @headers['SERVER'] = 'Apache/2.2'

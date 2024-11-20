@@ -1,7 +1,7 @@
 # frozen_string_literal: true
-require 'mechanize/test_case'
+require 'mechanize_curl/test_case'
 
-class TestMechanizeResponseReadError < Mechanize::TestCase
+class TestMechanizeResponseReadError < MechanizeCurl::TestCase
 
   def setup
     super
@@ -16,11 +16,11 @@ class TestMechanizeResponseReadError < Mechanize::TestCase
     @response['content-type'] = 'text/html'
     uri = URI 'http://example/'
 
-    e = Mechanize::ResponseReadError.new @error, @response, @body_io, uri, @mech
+    e = MechanizeCurl::ResponseReadError.new @error, @response, @body_io, uri, @mech
 
     page = e.force_parse
 
-    assert_kind_of Mechanize::Page, page
+    assert_kind_of MechanizeCurl::Page, page
     assert_equal 'body',            page.body
     assert_equal @mech,             page.mech
   end

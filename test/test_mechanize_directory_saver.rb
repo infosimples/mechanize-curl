@@ -1,7 +1,7 @@
 # frozen_string_literal: true
-require 'mechanize/test_case'
+require 'mechanize_curl/test_case'
 
-class TestMechanizeDirectorySaver < Mechanize::TestCase
+class TestMechanizeDirectorySaver < MechanizeCurl::TestCase
 
   def setup
     super
@@ -12,7 +12,7 @@ class TestMechanizeDirectorySaver < Mechanize::TestCase
 
   def test_self_save_to
     in_tmpdir do
-      saver = Mechanize::DirectorySaver.save_to 'dir'
+      saver = MechanizeCurl::DirectorySaver.save_to 'dir'
 
       saver.new @uri, nil, @io, 200
 
@@ -23,7 +23,7 @@ class TestMechanizeDirectorySaver < Mechanize::TestCase
 
   def test_self_save_to_cd
     in_tmpdir do
-      saver = Mechanize::DirectorySaver.save_to 'dir'
+      saver = MechanizeCurl::DirectorySaver.save_to 'dir'
 
       FileUtils.mkdir 'other'
 
@@ -38,7 +38,7 @@ class TestMechanizeDirectorySaver < Mechanize::TestCase
 
   def test_with_decode_filename
     in_tmpdir do
-      saver = Mechanize::DirectorySaver.save_to 'dir', :decode_filename => true
+      saver = MechanizeCurl::DirectorySaver.save_to 'dir', :decode_filename => true
       uri = URI 'http://example.com/foo+bar.html'
       saver.new uri, nil, @io, 200
 
@@ -48,8 +48,8 @@ class TestMechanizeDirectorySaver < Mechanize::TestCase
 
   def test_initialize_no_save_dir
     in_tmpdir do
-      e = assert_raises Mechanize::Error do
-        Mechanize::DirectorySaver.new @uri, nil, @io, 200
+      e = assert_raises MechanizeCurl::Error do
+        MechanizeCurl::DirectorySaver.new @uri, nil, @io, 200
       end
 
       assert_match %r%no save directory specified%, e.message

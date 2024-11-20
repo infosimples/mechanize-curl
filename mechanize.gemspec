@@ -1,10 +1,10 @@
 # coding: utf-8
 # frozen_string_literal: true
-require_relative 'lib/mechanize/version'
+require_relative 'lib/mechanize_curl/version'
 
 Gem::Specification.new do |spec|
   spec.name = "mechanize-curl"
-  spec.version = Mechanize::VERSION
+  spec.version = MechanizeCurl::VERSION
   spec.homepage = "https://github.com/infosimples/mechanize-curl/"
   spec.summary = 'Mechanize gem fork that uses CURL instead of net/http'
   spec.description =

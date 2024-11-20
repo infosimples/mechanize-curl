@@ -1,7 +1,7 @@
 # frozen_string_literal: true
-require 'mechanize/test_case'
+require 'mechanize_curl/test_case'
 
-class TestMechanizePluggableParser < Mechanize::TestCase
+class TestMechanizePluggableParser < MechanizeCurl::TestCase
 
   def setup
     super
@@ -10,28 +10,28 @@ class TestMechanizePluggableParser < Mechanize::TestCase
   end
 
   def test_aref
-    @pp['text/html'] = Mechanize::Download
+    @pp['text/html'] = MechanizeCurl::Download
 
-    assert_equal Mechanize::Download, @pp['text/html']
+    assert_equal MechanizeCurl::Download, @pp['text/html']
   end
 
   def test_csv
-    @pp.csv = Mechanize::Download
+    @pp.csv = MechanizeCurl::Download
 
-    assert_equal Mechanize::Download, @pp['text/csv']
+    assert_equal MechanizeCurl::Download, @pp['text/csv']
   end
 
   def test_html
-    assert_equal Mechanize::Page, @pp['text/html']
+    assert_equal MechanizeCurl::Page, @pp['text/html']
 
-    @pp.html = Mechanize::Download
+    @pp.html = MechanizeCurl::Download
 
-    assert_equal Mechanize::Download, @pp['text/html']
+    assert_equal MechanizeCurl::Download, @pp['text/html']
   end
 
   def test_parser
-    assert_equal Mechanize::XmlFile, @pp.parser('text/xml')
-    assert_equal Mechanize::File, @pp.parser(nil)
+    assert_equal MechanizeCurl::XmlFile, @pp.parser('text/xml')
+    assert_equal MechanizeCurl::File, @pp.parser(nil)
   end
 
   def test_parser_mime
@@ -39,29 +39,29 @@ class TestMechanizePluggableParser < Mechanize::TestCase
 
     assert_equal :png, @pp.parser('x-image/x-png')
     assert_equal :png, @pp.parser('image/png')
-    assert_equal Mechanize::Image, @pp.parser('image')
+    assert_equal MechanizeCurl::Image, @pp.parser('image')
   end
 
   def test_parser_bogus
     assert_nil @pp['bogus']
 
-    assert_equal Mechanize::File, @pp.parser('bogus')
+    assert_equal MechanizeCurl::File, @pp.parser('bogus')
   end
 
   def test_pdf
-    @pp.pdf = Mechanize::Download
+    @pp.pdf = MechanizeCurl::Download
 
-    assert_equal Mechanize::Download, @pp['application/pdf']
+    assert_equal MechanizeCurl::Download, @pp['application/pdf']
   end
 
   def test_xml
-    assert_equal Mechanize::XmlFile, @pp['text/xml']
-    assert_equal Mechanize::XmlFile, @pp['application/xml']
+    assert_equal MechanizeCurl::XmlFile, @pp['text/xml']
+    assert_equal MechanizeCurl::XmlFile, @pp['application/xml']
 
-    @pp.xml = Mechanize::Download
+    @pp.xml = MechanizeCurl::Download
 
-    assert_equal Mechanize::Download, @pp['text/xml']
-    assert_equal Mechanize::Download, @pp['application/xml']
+    assert_equal MechanizeCurl::Download, @pp['text/xml']
+    assert_equal MechanizeCurl::Download, @pp['application/xml']
   end
 
 end

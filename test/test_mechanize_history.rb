@@ -1,14 +1,14 @@
 # frozen_string_literal: true
-require 'mechanize/test_case'
+require 'mechanize_curl/test_case'
 
-class TestMechanizeHistory < Mechanize::TestCase
+class TestMechanizeHistory < MechanizeCurl::TestCase
 
   def setup
     super
 
     @uri = URI 'http://example/'
     @uri2 = @uri + '/a'
-    @history = Mechanize::History.new
+    @history = MechanizeCurl::History.new
   end
 
   def test_initialize
@@ -49,7 +49,7 @@ class TestMechanizeHistory < Mechanize::TestCase
   end
 
   def test_push_max_size
-    @history = Mechanize::History.new 2
+    @history = MechanizeCurl::History.new 2
 
     @history.push :page1, @uri
 

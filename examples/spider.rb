@@ -1,7 +1,7 @@
 require 'rubygems'
-require 'mechanize'
+require 'mechanize-curl'
 
-agent = Mechanize.new
+agent = MechanizeCurl.new
 agent.max_history = nil # unlimited history
 stack = agent.get(ARGV[0]).links
 
@@ -14,9 +14,9 @@ while l = stack.pop
   puts "crawling #{l.uri}"
   begin
     page = l.click
-    next unless Mechanize::Page === page
+    next unless MechanizeCurl::Page === page
     stack.push(*page.links)
-  rescue Mechanize::ResponseCodeError
+  rescue MechanizeCurl::ResponseCodeError
   end
 end
 

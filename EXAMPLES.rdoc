@@ -8,7 +8,7 @@ example, <code>do ... end.submit</code> is the same as <code>{ ...
 == Google
 
   require 'rubygems'
-  require 'mechanize'
+  require 'mechanize-curl'
 
   a = Mechanize.new { |agent|
     agent.user_agent_alias = 'Mac Safari'
@@ -29,7 +29,7 @@ example, <code>do ... end.submit</code> is the same as <code>{ ...
 Upload a file to flickr.
 
   require 'rubygems'
-  require 'mechanize'
+  require 'mechanize-curl'
 
   abort "#{$0} login passwd filename" if (ARGV.size != 3)
 
@@ -64,7 +64,7 @@ Let's say you want HTML pages to automatically be parsed with Rubyful Soup.
 This example shows you how:
 
   require 'rubygems'
-  require 'mechanize'
+  require 'mechanize-curl'
   require 'rubyful_soup'
 
   class SoupParser < Mechanize::Page
@@ -85,7 +85,7 @@ Beautiful Soup for that page.
 == Using a proxy
 
   require 'rubygems'
-  require 'mechanize'
+  require 'mechanize-curl'
 
   agent = Mechanize.new
   agent.set_proxy 'localhost', 8000
@@ -102,7 +102,7 @@ accounting for possible exceptions).
 This example also demonstrates subclassing Mechanize.
 
   require 'rubygems'
-  require 'mechanize'
+  require 'mechanize-curl'
 
   class TestMech < Mechanize
     def process
@@ -141,7 +141,7 @@ browser you will have to export it and split the certificate and private key
 into separate files.
 
   require 'rubygems'
-  require 'mechanize'
+  require 'mechanize-curl'
 
   # create Mechanize instance
   agent = Mechanize.new

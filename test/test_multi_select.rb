@@ -1,7 +1,7 @@
 # frozen_string_literal: true
-require 'mechanize/test_case'
+require 'mechanize_curl/test_case'
 
-class MultiSelectTest < Mechanize::TestCase
+class MultiSelectTest < MechanizeCurl::TestCase
   def setup
     super
 

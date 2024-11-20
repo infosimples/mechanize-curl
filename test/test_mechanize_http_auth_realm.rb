@@ -1,13 +1,13 @@
 # frozen_string_literal: true
-require 'mechanize/test_case'
+require 'mechanize_curl/test_case'
 
-class TestMechanizeHttpAuthRealm < Mechanize::TestCase
+class TestMechanizeHttpAuthRealm < MechanizeCurl::TestCase
 
   def setup
     super
 
     @uri = URI 'http://example/'
-    @AR = Mechanize::HTTP::AuthRealm
+    @AR = MechanizeCurl::HTTP::AuthRealm
     @realm = @AR.new 'Digest', @uri, 'r'
   end
 

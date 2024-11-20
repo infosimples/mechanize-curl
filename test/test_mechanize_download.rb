@@ -1,12 +1,12 @@
 # frozen_string_literal: true
-require 'mechanize/test_case'
+require 'mechanize_curl/test_case'
 
-class TestMechanizeDownload < Mechanize::TestCase
+class TestMechanizeDownload < MechanizeCurl::TestCase
 
   def setup
     super
 
-    @parser = Mechanize::Download
+    @parser = MechanizeCurl::Download
   end
 
   def test_body

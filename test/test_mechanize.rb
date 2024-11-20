@@ -1,9 +1,9 @@
 # coding: utf-8
 # frozen_string_literal: true
 
-require 'mechanize/test_case'
+require 'mechanize_curl/test_case'
 
-class TestMechanize < Mechanize::TestCase
+class TestMechanize < MechanizeCurl::TestCase
 
   def setup
     super
@@ -54,7 +54,7 @@ class TestMechanize < Mechanize::TestCase
       open 'key.pem', 'w'  do |io| io.write ssl_private_key.to_pem end
       open 'cert.pem', 'w' do |io| io.write ssl_certificate.to_pem end
 
-      mech = Mechanize.new do |a|
+      mech = MechanizeCurl.new do |a|
         a.cert = 'cert.pem'
         a.key  = 'key.pem'
       end
@@ -65,7 +65,7 @@ class TestMechanize < Mechanize::TestCase
   end
 
   def test_cert_key_object
-    mech = Mechanize.new do |a|
+    mech = MechanizeCurl.new do |a|
       a.cert = ssl_certificate
       a.key  = ssl_private_key
     end
@@ -125,7 +125,7 @@ class TestMechanize < Mechanize::TestCase
 
   def test_click_frame
     frame = node 'frame', 'src' => '/index.html'
-    frame = Mechanize::Page::Frame.new frame, @mech, fake_page
+    frame = MechanizeCurl::Page::Frame.new frame, @mech, fake_page
 
     @mech.click frame
 
@@ -154,7 +154,7 @@ class TestMechanize < Mechanize::TestCase
 
   def test_click_link
     link = node 'a', 'href' => '/index.html'
-    link = Mechanize::Page::Link.new link, @mech, fake_page
+    link = MechanizeCurl::Page::Link.new link, @mech, fake_page
 
     @mech.click link
 
@@ -174,18 +174,18 @@ class TestMechanize < Mechanize::TestCase
 
     @mech.robots = true
 
-    assert_raises Mechanize::RobotsDisallowedError do
+    assert_raises MechanizeCurl::RobotsDisallowedError do
       page.links[0].click
     end
 
-    assert_raises Mechanize::RobotsDisallowedError do
+    assert_raises MechanizeCurl::RobotsDisallowedError do
       page.links[1].click
     end
   end
 
   def test_click_link_noreferrer
     link = node 'a', 'href' => '/index.html', 'rel' => 'noreferrer'
-    link = Mechanize::Page::Link.new link, @mech, fake_page
+    link = MechanizeCurl::Page::Link.new link, @mech, fake_page
 
     @mech.click link
 
@@ -205,7 +205,7 @@ but not <a href="/" rel="me nofollow">this</a>!
 
     page.links[0].click
 
-    assert_raises Mechanize::RobotsDisallowedError do
+    assert_raises MechanizeCurl::RobotsDisallowedError do
       page.links[1].click
     end
   end
@@ -213,7 +213,7 @@ but not <a href="/" rel="me nofollow">this</a>!
   def test_click_link_parent
     page = page URI 'http://example/a/index.html'
     link = node 'a', 'href' => '../index.html'
-    link = Mechanize::Page::Link.new link, @mech, page
+    link = MechanizeCurl::Page::Link.new link, @mech, page
 
     @mech.click link
 
@@ -223,7 +223,7 @@ but not <a href="/" rel="me nofollow">this</a>!
   def test_click_link_parent_extra
     page = page URI 'http://example/a/index.html'
     link = node 'a', 'href' => '../../index.html'
-    link = Mechanize::Page::Link.new link, @mech, page
+    link = MechanizeCurl::Page::Link.new link, @mech, page
 
     @mech.click link
 
@@ -283,7 +283,7 @@ but not <a href="/" rel="me nofollow">this</a>!
   end
 
   def test_cookie_jar
-    assert_kind_of Mechanize::CookieJar, @mech.cookie_jar
+    assert_kind_of MechanizeCurl::CookieJar, @mech.cookie_jar
 
     jar = HTTP::CookieJar.new
 
@@ -320,7 +320,7 @@ but not <a href="/" rel="me nofollow">this</a>!
     end
 
     assert_empty @mech.history
-    assert_kind_of Mechanize::Page, page
+    assert_kind_of MechanizeCurl::Page, page
   end
 
   def test_download_filename
@@ -333,12 +333,12 @@ but not <a href="/" rel="me nofollow">this</a>!
     end
 
     assert_empty @mech.history
-    assert_kind_of Mechanize::Page, page
+    assert_kind_of MechanizeCurl::Page, page
   end
 
   def test_download_filename_error
     in_tmpdir do
-      assert_raises Mechanize::UnauthorizedError do
+      assert_raises MechanizeCurl::UnauthorizedError do
         @mech.download 'http://example/digest_auth', 'download'
       end
 
@@ -395,7 +395,7 @@ but not <a href="/" rel="me nofollow">this</a>!
   def test_get_auth_bad
     @mech.add_auth(@uri, 'aaron', 'aaron')
 
-    e = assert_raises Mechanize::UnauthorizedError do
+    e = assert_raises MechanizeCurl::UnauthorizedError do
       @mech.get(@uri + '/basic_auth')
     end
 
@@ -403,7 +403,7 @@ but not <a href="/" rel="me nofollow">this</a>!
   end
 
   def test_get_auth_none
-    e = assert_raises Mechanize::UnauthorizedError do
+    e = assert_raises MechanizeCurl::UnauthorizedError do
       @mech.get(@uri + '/basic_auth')
     end
 
@@ -456,7 +456,7 @@ but not <a href="/" rel="me nofollow">this</a>!
       begin
         @mech.get('http://localhost/tc_follow_meta_loop_1.html')
       rescue => e
-        assert_instance_of Mechanize::RedirectLimitReachedError, e
+        assert_instance_of MechanizeCurl::RedirectLimitReachedError, e
         assert_equal limit, e.redirects
         if limit % 2 == 0
           assert_equal '/tc_follow_meta_loop_1.html', e.page.uri.path
@@ -527,7 +527,7 @@ but not <a href="/" rel="me nofollow">this</a>!
   end
 
   def test_get_referer_download
-    download = Mechanize::Download.new URI 'http://example/prev'
+    download = MechanizeCurl::Download.new URI 'http://example/prev'
 
     uri = URI 'http://example'
 
@@ -544,7 +544,7 @@ but not <a href="/" rel="me nofollow">this</a>!
 
     assert_equal "Page Title", @mech.get("http://localhost/index.html").title
 
-    assert_raises Mechanize::RobotsDisallowedError do
+    assert_raises MechanizeCurl::RobotsDisallowedError do
       @mech.get "http://localhost/norobots.html"
     end
   end
@@ -560,7 +560,7 @@ but not <a href="/" rel="me nofollow">this</a>!
   def test_get_gzip
     page = @mech.get("http://localhost/gzip?file=index.html")
 
-    assert_kind_of(Mechanize::Page, page)
+    assert_kind_of(MechanizeCurl::Page, page)
 
     assert_match('Hello World', page.body)
   end
@@ -569,7 +569,7 @@ but not <a href="/" rel="me nofollow">this</a>!
     h = {'X-ResponseContentEncoding' => 'agzip'}
 
     # test of X-ResponseContentEncoding feature
-    assert_raises(Mechanize::Error, 'Unsupported Content-Encoding: agzip') do
+    assert_raises(MechanizeCurl::Error, 'Unsupported Content-Encoding: agzip') do
       @mech.get("http://localhost/gzip?file=index.html", nil, nil, h)
     end
 
@@ -653,7 +653,7 @@ but not <a href="/" rel="me nofollow">this</a>!
   end
 
   def test_get_redirect_infinite
-    assert_raises(Mechanize::RedirectLimitReachedError) {
+    assert_raises(MechanizeCurl::RedirectLimitReachedError) {
       @mech.get('http://localhost/infinite_refresh')
     }
   end
@@ -670,7 +670,7 @@ but not <a href="/" rel="me nofollow">this</a>!
 
   def test_get_referer_file
     uri = URI 'http://tenderlovemaking.com/crossdomain.xml'
-    file = Mechanize::File.new uri
+    file = MechanizeCurl::File.new uri
 
     @mech.get('http://localhost', [], file)
 
@@ -687,10 +687,10 @@ but not <a href="/" rel="me nofollow">this</a>!
   end
 
   def test_get_scheme_unsupported
-    assert_raises Mechanize::UnsupportedSchemeError do
+    assert_raises MechanizeCurl::UnsupportedSchemeError do
       begin
         @mech.get('ftp://server.com/foo.html')
-      rescue Mechanize::UnsupportedSchemeError => error
+      rescue MechanizeCurl::UnsupportedSchemeError => error
         assert_equal 'ftp', error.scheme
         assert_equal 'ftp://server.com/foo.html', error.uri.to_s
         raise
@@ -739,7 +739,7 @@ but not <a href="/" rel="me nofollow">this</a>!
   end
 
   def test_get_file_download
-    # non-Mechanize::File
+    # non-MechanizeCurl::File
     body = @mech.get_file 'http://localhost/button.jpg'
 
     assert_kind_of String, body
@@ -808,7 +808,7 @@ but not <a href="/" rel="me nofollow">this</a>!
   end
 
   def test_initialize
-    mech = Mechanize.new
+    mech = MechanizeCurl.new
 
     assert_equal 50, mech.max_history
   end
@@ -821,7 +821,7 @@ but not <a href="/" rel="me nofollow">this</a>!
   end
 
   def test_idle_timeout_default
-    assert_equal 5, Mechanize.new.idle_timeout
+    assert_equal 5, MechanizeCurl.new.idle_timeout
   end
 
   def test_idle_timeout_equals
@@ -854,7 +854,7 @@ but not <a href="/" rel="me nofollow">this</a>!
     @mech.log = Logger.new $stderr
 
     refute_nil @mech.log
-    assert_nil Mechanize.log
+    assert_nil MechanizeCurl.log
   end
 
   def test_max_file_buffer_equals
@@ -883,7 +883,7 @@ but not <a href="/" rel="me nofollow">this</a>!
   end
 
   def test_parse_download
-    @mech.pluggable_parser['application/octet-stream'] = Mechanize::Download
+    @mech.pluggable_parser['application/octet-stream'] = MechanizeCurl::Download
 
     response = Net::HTTPOK.allocate
     response.instance_variable_set(:@header,
@@ -892,7 +892,7 @@ but not <a href="/" rel="me nofollow">this</a>!
 
     download = @mech.parse @uri, response, StringIO.new('raw')
 
-    assert_kind_of Mechanize::Download, download
+    assert_kind_of MechanizeCurl::Download, download
     assert_kind_of StringIO, download.content
   end
 
@@ -902,7 +902,7 @@ but not <a href="/" rel="me nofollow">this</a>!
 
     page = @mech.parse URI('http://example/'), response, ''
 
-    assert_kind_of Mechanize::Page, page
+    assert_kind_of MechanizeCurl::Page, page
   end
 
   def test_post
@@ -956,7 +956,7 @@ but not <a href="/" rel="me nofollow">this</a>!
 
   def test_post_file_upload_nonascii
     name = 'ユーザファイル1'
-    file_upload = Mechanize::Form::FileUpload.new({'name' => 'userfile1'}, name)
+    file_upload = MechanizeCurl::Form::FileUpload.new({'name' => 'userfile1'}, name)
     file_upload.file_data = File.read(__FILE__)
     file_upload.mime_type = 'application/zip'
 
@@ -975,7 +975,7 @@ but not <a href="/" rel="me nofollow">this</a>!
 
   def test_post_file_upload
     name = File.basename(__FILE__)
-    file_upload = Mechanize::Form::FileUpload.new({'name' => 'userfile1'}, name)
+    file_upload = MechanizeCurl::Form::FileUpload.new({'name' => 'userfile1'}, name)
     file_upload.file_data = File.read(__FILE__)
     file_upload.mime_type = 'application/zip'
 
@@ -1110,7 +1110,7 @@ but not <a href="/" rel="me nofollow">this</a>!
   def test_start
     body = nil
 
-    Mechanize.start do |m|
+    MechanizeCurl.start do |m|
       body = m.get("http://localhost/").body
     end
 
@@ -1215,7 +1215,7 @@ but not <a href="/" rel="me nofollow">this</a>!
 
   def test_submit_get
     form = node 'form', 'method' => 'GET', 'action' => '/?a=b'
-    form = Mechanize::Form.new form, @mech, fake_page
+    form = MechanizeCurl::Form.new form, @mech, fake_page
 
     @mech.submit form
 
@@ -1270,7 +1270,7 @@ but not <a href="/" rel="me nofollow">this</a>!
 
   def test_submit_post
     form = node 'form', 'method' => 'POST', 'action' => '/?a=b'
-    form = Mechanize::Form.new form, @mech, fake_page
+    form = MechanizeCurl::Form.new form, @mech, fake_page
 
     @mech.submit form
 
@@ -1279,7 +1279,7 @@ but not <a href="/" rel="me nofollow">this</a>!
 
   def test_submit_post_pound
     form = node 'form', 'method' => 'POST', 'action' => '/#1'
-    form = Mechanize::Form.new form, @mech, fake_page
+    form = MechanizeCurl::Form.new form, @mech, fake_page
 
     @mech.submit form
 
@@ -1291,7 +1291,7 @@ but not <a href="/" rel="me nofollow">this</a>!
     form = page.form_with(:name => 'post_form1')
     form.radiobuttons.each { |r| r.checked = true }
 
-    assert_raises Mechanize::Error do
+    assert_raises MechanizeCurl::Error do
       @mech.submit(form)
     end
   end
@@ -1338,7 +1338,7 @@ but not <a href="/" rel="me nofollow">this</a>!
 
     page = page URI 'http://example'
     link = node 'a', 'href' => '/index.html'
-    link = Mechanize::Page::Link.new link, page, @mech
+    link = MechanizeCurl::Page::Link.new link, page, @mech
 
     assert @mech.visited? link
   end
@@ -1354,7 +1354,7 @@ but not <a href="/" rel="me nofollow">this</a>!
   def test_no_frames_exists
     page = @mech.get("http://localhost/empty_form.html");
     assert_nil page.frame_with(:name => 'noframe')
-    assert_raises Mechanize::ElementNotFoundError do
+    assert_raises MechanizeCurl::ElementNotFoundError do
       page.frame_with!(:name => 'noframe')
     end
   end

@@ -1,9 +1,9 @@
 # coding: utf-8
 # frozen_string_literal: true
 
-require 'mechanize/test_case'
+require 'mechanize_curl/test_case'
 
-class TestMechanizeUtil < Mechanize::TestCase
+class TestMechanizeUtil < MechanizeCurl::TestCase
 
   INPUTTED_VALUE = "テスト" # "test" in Japanese UTF-8 encoding
   CONTENT_ENCODING = 'Shift_JIS' # one of Japanese encoding
@@ -17,7 +17,7 @@ class TestMechanizeUtil < Mechanize::TestCase
   def setup
     super
 
-    @MU = Mechanize::Util
+    @MU = MechanizeCurl::Util
     @result = "not set"
   end
 
@@ -38,14 +38,14 @@ class TestMechanizeUtil < Mechanize::TestCase
   end
 
   def test_from_native_charset_doesnot_convert_when_not_nokogiri
-    parser = Mechanize.html_parser
-    Mechanize.html_parser = 'Another HTML Parser'
+    parser = MechanizeCurl.html_parser
+    MechanizeCurl.html_parser = 'Another HTML Parser'
 
     @result = @MU.from_native_charset(INPUTTED_VALUE, CONTENT_ENCODING)
     refute_equal ENCODED_VALUE, @result
     assert_equal INPUTTED_VALUE, @result
   ensure
-    Mechanize.html_parser = parser
+    MechanizeCurl.html_parser = parser
   end
 
   def test_from_native_charset_raises_error_with_bad_encoding

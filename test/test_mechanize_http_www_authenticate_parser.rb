@@ -1,12 +1,12 @@
 # frozen_string_literal: true
-require 'mechanize/test_case'
+require 'mechanize_curl/test_case'
 
-class TestMechanizeHttpWwwAuthenticateParser < Mechanize::TestCase
+class TestMechanizeHttpWwwAuthenticateParser < MechanizeCurl::TestCase
 
   def setup
     super
 
-    @parser = Mechanize::HTTP::WWWAuthenticateParser.new
+    @parser = MechanizeCurl::HTTP::WWWAuthenticateParser.new
   end
 
   def test_auth_param
@@ -197,7 +197,7 @@ class TestMechanizeHttpWwwAuthenticateParser < Mechanize::TestCase
   end
 
   def challenge scheme, params, raw
-    Mechanize::HTTP::AuthChallenge.new scheme, params, raw
+    MechanizeCurl::HTTP::AuthChallenge.new scheme, params, raw
   end
 
 end

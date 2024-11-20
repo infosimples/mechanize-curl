@@ -1,4 +1,4 @@
-require 'mechanize'
+require 'mechanize-curl'
 require 'tsort'
 
 ##
@@ -11,7 +11,7 @@ require 'tsort'
 class WikipediaLinksToPhilosophy
 
   def initialize
-    @agent = Mechanize.new
+    @agent = MechanizeCurl.new
     @agent.user_agent_alias = 'Mac Safari' # Wikipedia blocks "mechanize"
 
     @history = @agent.history
@@ -80,7 +80,7 @@ class WikipediaLinksToPhilosophy
     end
 
     # convert a Nokogiri HTML element back to a mechanize link
-    link = Mechanize::Page::Link.new link, @agent, @page
+    link = MechanizeCurl::Page::Link.new link, @agent, @page
 
     return if @seen = @agent.visited?(link)
 

@@ -1,17 +1,17 @@
 # frozen_string_literal: true
-require 'mechanize/test_case'
+require 'mechanize_curl/test_case'
 
-class TestMechanizeFile < Mechanize::TestCase
+class TestMechanizeFile < MechanizeCurl::TestCase
 
   def setup
     super
 
-    @parser = Mechanize::File
+    @parser = MechanizeCurl::File
   end
 
   def test_save
     uri = URI 'http://example/name.html'
-    page = Mechanize::File.new uri, nil, '0123456789'
+    page = MechanizeCurl::File.new uri, nil, '0123456789'
 
     Dir.mktmpdir do |dir|
       Dir.chdir dir do
@@ -38,7 +38,7 @@ class TestMechanizeFile < Mechanize::TestCase
 
   def test_save_default
     uri = URI 'http://example/test.html'
-    page = Mechanize::File.new uri, nil, ''
+    page = MechanizeCurl::File.new uri, nil, ''
 
     Dir.mktmpdir do |dir|
       Dir.chdir dir do
@@ -62,7 +62,7 @@ class TestMechanizeFile < Mechanize::TestCase
 
   def test_save_default_dots
     uri = URI 'http://localhost/../test.html'
-    page = Mechanize::File.new uri, nil, ''
+    page = MechanizeCurl::File.new uri, nil, ''
 
     Dir.mktmpdir do |dir|
       Dir.chdir dir do
@@ -79,14 +79,14 @@ class TestMechanizeFile < Mechanize::TestCase
 
   def test_filename
     uri = URI 'http://localhost/test.html'
-    page = Mechanize::File.new uri, nil, ''
+    page = MechanizeCurl::File.new uri, nil, ''
 
     assert_equal "test.html", page.filename
   end
 
   def test_save_overwrite
     uri = URI 'http://example/test.html'
-    page = Mechanize::File.new uri, nil, ''
+    page = MechanizeCurl::File.new uri, nil, ''
 
     Dir.mktmpdir do |dir|
       Dir.chdir dir do
@@ -107,7 +107,7 @@ class TestMechanizeFile < Mechanize::TestCase
   def test_save_bang_does_not_allow_command_injection
     skip if windows?
     uri = URI 'http://example/test.html'
-    page = Mechanize::File.new uri, nil, ''
+    page = MechanizeCurl::File.new uri, nil, ''
 
     in_tmpdir do
       page.save!('| ruby -rfileutils -e \'FileUtils.touch("vul.txt")\'')

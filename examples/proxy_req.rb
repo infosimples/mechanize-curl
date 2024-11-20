@@ -1,7 +1,7 @@
 require 'rubygems'
-require 'mechanize'
+require 'mechanize-curl'
 
-agent = Mechanize.new
+agent = MechanizeCurl.new
 agent.set_proxy('localhost', '8000')
 page = agent.get(ARGV[0])
 puts page.body

@@ -1,12 +1,12 @@
 # frozen_string_literal: true
-require 'mechanize/test_case'
+require 'mechanize_curl/test_case'
 
-class TestMechanizeFileRequest < Mechanize::TestCase
+class TestMechanizeFileRequest < MechanizeCurl::TestCase
 
   def setup
     @uri = URI.parse 'file:///nonexistent'
 
-    @r = Mechanize::FileRequest.new @uri
+    @r = MechanizeCurl::FileRequest.new @uri
   end
 
   def test_initialize

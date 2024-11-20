@@ -1,7 +1,7 @@
 # frozen_string_literal: true
-require 'mechanize/test_case'
+require 'mechanize_curl/test_case'
 
-class TestMechanizeFormOption < Mechanize::TestCase
+class TestMechanizeFormOption < MechanizeCurl::TestCase
 
   def setup
     super
@@ -28,7 +28,7 @@ class TestMechanizeFormOption < Mechanize::TestCase
   def test_value_missing_value
     option = node 'option'
     option.inner_html = 'blah'
-    option = Mechanize::Form::Option.new option, nil
+    option = MechanizeCurl::Form::Option.new option, nil
 
     assert_equal 'blah', option.value
   end

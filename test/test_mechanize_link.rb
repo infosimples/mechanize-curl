@@ -1,7 +1,7 @@
 # frozen_string_literal: true
-require 'mechanize/test_case'
+require 'mechanize_curl/test_case'
 
-class TestMechanizeLink < Mechanize::TestCase
+class TestMechanizeLink < MechanizeCurl::TestCase
 
   def test_search
     page = @mech.get("http://localhost/find_link.html")
@@ -51,10 +51,10 @@ class TestMechanizeLink < Mechanize::TestCase
   def test_click_unsupported_scheme
     page = @mech.get("http://google.com/tc_links.html")
     link = page.link_with(:text => 'javascript link')
-    assert_raises Mechanize::UnsupportedSchemeError do
+    assert_raises MechanizeCurl::UnsupportedSchemeError do
       begin
         link.click
-      rescue Mechanize::UnsupportedSchemeError => error
+      rescue MechanizeCurl::UnsupportedSchemeError => error
           assert_equal 'javascript', error.scheme
           assert_equal "javascript:new_page('1')", error.uri.to_s
         raise
@@ -78,8 +78,8 @@ class TestMechanizeLink < Mechanize::TestCase
     begin
       page.link_with!(:text => 'no link').click
     rescue => e
-      assert_instance_of Mechanize::ElementNotFoundError, e
-      assert_kind_of Mechanize::Page, e.source
+      assert_instance_of MechanizeCurl::ElementNotFoundError, e
+      assert_kind_of MechanizeCurl::Page, e.source
       assert_equal :link, e.element
       assert_kind_of Hash, e.conditions
       assert_equal 'no link', e.conditions[:text]
@@ -113,7 +113,7 @@ class TestMechanizeLink < Mechanize::TestCase
     node = Nokogiri::XML::Node.new('foo', doc)
     node['href'] = 'http://foo.bar/%20baz'
 
-    link = Mechanize::Page::Link.new(node, nil, nil)
+    link = MechanizeCurl::Page::Link.new(node, nil, nil)
 
     assert_equal 'http://foo.bar/%20baz', link.uri.to_s
   end
@@ -131,7 +131,7 @@ class TestMechanizeLink < Mechanize::TestCase
     node = Nokogiri::XML::Node.new('foo', doc)
     node['href'] = 'http://foo.bar/ baz'
 
-    link = Mechanize::Page::Link.new(node, nil, nil)
+    link = MechanizeCurl::Page::Link.new(node, nil, nil)
 
     assert_equal 'http://foo.bar/%20baz', link.uri.to_s
   end
@@ -142,7 +142,7 @@ class TestMechanizeLink < Mechanize::TestCase
     node = Nokogiri::XML::Node.new('foo', doc)
     node['href'] = 'http://foo.bar/ baz#уважение'
 
-    link = Mechanize::Page::Link.new(node, nil, nil)
+    link = MechanizeCurl::Page::Link.new(node, nil, nil)
 
     assert_equal '%D1%83%D0%B2%D0%B0%D0%B6%D0%B5%D0%BD%D0%B8%D0%B5', link.uri.fragment
   end
@@ -153,7 +153,7 @@ class TestMechanizeLink < Mechanize::TestCase
     node = Nokogiri::XML::Node.new('foo', doc)
     node['href'] = 'http://http:foo.bar/ baz'
 
-    link = Mechanize::Page::Link.new(node, nil, nil)
+    link = MechanizeCurl::Page::Link.new(node, nil, nil)
 
     assert_raises URI::InvalidURIError do
       link.uri

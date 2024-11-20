@@ -1,12 +1,12 @@
 # frozen_string_literal: true
-require 'mechanize/test_case'
+require 'mechanize_curl/test_case'
 
-class TestMechanizeFileConnection < Mechanize::TestCase
+class TestMechanizeFileConnection < MechanizeCurl::TestCase
 
   def test_request
     file_path = File.expand_path(__FILE__)
     uri = URI.parse "file://#{file_path}"
-    conn = Mechanize::FileConnection.new
+    conn = MechanizeCurl::FileConnection.new
 
     body = +''
 
@@ -25,7 +25,7 @@ class TestMechanizeFileConnection < Mechanize::TestCase
     expected_file_path = "C:/path/to/file.html"
 
     uri = URI.parse(uri_string)
-    conn = Mechanize::FileConnection.new
+    conn = MechanizeCurl::FileConnection.new
 
     called = false
     yielded_file_path = nil

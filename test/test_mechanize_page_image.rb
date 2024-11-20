@@ -1,7 +1,7 @@
 # frozen_string_literal: true
-require 'mechanize/test_case'
+require 'mechanize_curl/test_case'
 
-class TestMechanizePageImage < Mechanize::TestCase
+class TestMechanizePageImage < MechanizeCurl::TestCase
 
   def setup
     super
@@ -9,13 +9,13 @@ class TestMechanizePageImage < Mechanize::TestCase
     @uri = URI 'http://example/'
     @src = (@uri + 'a.jpg').to_s
 
-    @empty_page = Mechanize::Page.new(@uri, nil, '', 200, @mech)
+    @empty_page = MechanizeCurl::Page.new(@uri, nil, '', 200, @mech)
   end
 
   def img attributes
     img = node 'img', attributes
 
-    Mechanize::Page::Image.new img, @empty_page
+    MechanizeCurl::Page::Image.new img, @empty_page
   end
 
   def test_initialize

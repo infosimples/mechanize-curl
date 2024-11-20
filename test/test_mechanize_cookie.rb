@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-require 'mechanize/test_case'
+require 'mechanize_curl/test_case'
 
 module Enumerable
   def combine
@@ -18,15 +18,15 @@ module Enumerable
   end
 end
 
-class TestMechanizeCookie < Mechanize::TestCase
+class TestMechanizeCookie < MechanizeCurl::TestCase
   def assert_cookie_parse url, cookie_text, &block
     cookie = nil
 
     block ||= proc { |p_cookie| cookie = p_cookie }
 
-    exp_re = /The call of Mechanize::Cookie.parse/
+    exp_re = /The call of MechanizeCurl::Cookie.parse/
     assert_output "", exp_re do
-      Mechanize::Cookie.parse(url, cookie_text, &block)
+      MechanizeCurl::Cookie.parse(url, cookie_text, &block)
     end
 
     cookie
@@ -59,7 +59,7 @@ class TestMechanizeCookie < Mechanize::TestCase
     dates.each do |date|
       cookie = "PREF=1; expires=#{date}"
       silently do
-        Mechanize::Cookie.parse(url, cookie) { |c|
+        MechanizeCurl::Cookie.parse(url, cookie) { |c|
           assert c.expires, "Tried parsing: #{date}"
           assert_equal(true, c.expires < yesterday)
         }
@@ -149,7 +149,7 @@ class TestMechanizeCookie < Mechanize::TestCase
     silently do
       dates.each do |date|
         cookie = "PREF=1; expires=#{date}"
-        Mechanize::Cookie.parse(url, cookie) { |c|
+        MechanizeCurl::Cookie.parse(url, cookie) { |c|
           assert_equal(true, c.expires.nil?)
         }
       end
@@ -254,7 +254,7 @@ class TestMechanizeCookie < Mechanize::TestCase
       "no_domain3=no_domain; Expires=Sun, 06 Nov 2011 00:29:53 GMT; no_expires=nope; Domain="
 
     cookies = nil
-    silently { cookies = Mechanize::Cookie.parse url, cookie_str }
+    silently { cookies = MechanizeCurl::Cookie.parse url, cookie_str }
     assert_equal 13, cookies.length
 
     name = cookies.find { |c| c.name == 'name' }
@@ -471,7 +471,7 @@ class TestMechanizeCookie < Mechanize::TestCase
   end
 
   def test_new
-    cookie = Mechanize::Cookie.new('key', 'value')
+    cookie = MechanizeCurl::Cookie.new('key', 'value')
     assert_equal 'key', cookie.name
     assert_equal 'value', cookie.value
     assert_nil cookie.expires
@@ -479,12 +479,12 @@ class TestMechanizeCookie < Mechanize::TestCase
     # Minimum unit for the expires attribute is second
     expires = Time.at((Time.now + 3600).to_i)
 
-    cookie = Mechanize::Cookie.new('key', 'value', :expires => expires.dup)
+    cookie = MechanizeCurl::Cookie.new('key', 'value', :expires => expires.dup)
     assert_equal 'key', cookie.name
     assert_equal 'value', cookie.value
     assert_equal expires, cookie.expires
 
-    cookie = Mechanize::Cookie.new(:value => 'value', :name => 'key', :expires => expires.dup)
+    cookie = MechanizeCurl::Cookie.new(:value => 'value', :name => 'key', :expires => expires.dup)
     assert_equal 'key', cookie.name
     assert_equal 'value', cookie.value
     assert_equal expires, cookie.expires
@@ -516,7 +516,7 @@ class TestMechanizeCookie < Mechanize::TestCase
         'Example2.com'
       end
     }
-    assert_output nil, /The call of Mechanize::Cookie#set_domain/ do
+    assert_output nil, /The call of MechanizeCurl::Cookie#set_domain/ do
       cookie.set_domain(new_domain)
     end
     assert 'example2.com', cookie.domain

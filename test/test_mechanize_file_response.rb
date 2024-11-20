@@ -1,25 +1,25 @@
 # frozen_string_literal: true
-require 'mechanize/test_case'
+require 'mechanize_curl/test_case'
 
-class TestMechanizeFileResponse < Mechanize::TestCase
+class TestMechanizeFileResponse < MechanizeCurl::TestCase
   def test_file_path
-    res = Mechanize::FileResponse.new("/path/to/foo.html")
+    res = MechanizeCurl::FileResponse.new("/path/to/foo.html")
     assert_equal("/path/to/foo.html", res.file_path)
   end
 
   def test_content_type
     Tempfile.open %w[pi .nothtml] do |tempfile|
-      res = Mechanize::FileResponse.new tempfile.path
+      res = MechanizeCurl::FileResponse.new tempfile.path
       assert_nil res['content-type']
     end
 
     Tempfile.open %w[pi .xhtml] do |tempfile|
-      res = Mechanize::FileResponse.new tempfile.path
+      res = MechanizeCurl::FileResponse.new tempfile.path
       assert_equal 'text/html', res['content-type']
     end
 
     Tempfile.open %w[pi .html] do |tempfile|
-      res = Mechanize::FileResponse.new tempfile.path
+      res = MechanizeCurl::FileResponse.new tempfile.path
       assert_equal 'text/html', res['Content-Type']
     end
   end
@@ -29,7 +29,7 @@ class TestMechanizeFileResponse < Mechanize::TestCase
       tempfile.write("asdfasdfasdf")
       tempfile.close
 
-      res = Mechanize::FileResponse.new(tempfile.path)
+      res = MechanizeCurl::FileResponse.new(tempfile.path)
       res.read_body do |input|
         assert_equal("asdfasdfasdf", input)
       end
@@ -40,7 +40,7 @@ class TestMechanizeFileResponse < Mechanize::TestCase
     skip if windows?
     in_tmpdir do
       FileUtils.touch('| ruby -rfileutils -e \'FileUtils.touch("vul.txt")\'')
-      res = Mechanize::FileResponse.new('| ruby -rfileutils -e \'FileUtils.touch("vul.txt")\'')
+      res = MechanizeCurl::FileResponse.new('| ruby -rfileutils -e \'FileUtils.touch("vul.txt")\'')
       res.read_body { |_| }
       refute_operator(File, :exist?, "vul.txt")
     end

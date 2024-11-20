@@ -1,8 +1,8 @@
 # coding: utf-8
 # frozen_string_literal: true
-require 'mechanize/test_case'
+require 'mechanize_curl/test_case'
 
-class TestMechanizeFormEncoding < Mechanize::TestCase
+class TestMechanizeFormEncoding < MechanizeCurl::TestCase
 
   # See also: tests of Util.from_native_charset
   # Encoding test should do with non-utf-8 characters
@@ -66,7 +66,7 @@ class TestMechanizeFormEncoding < Mechanize::TestCase
     end
     node['method'] = 'POST'
     node['enctype'] = 'application/x-www-form-urlencoded'
-    form = Mechanize::Form.new(node)
+    form = MechanizeCurl::Form.new(node)
 
     assert_nil form.encoding
   end
