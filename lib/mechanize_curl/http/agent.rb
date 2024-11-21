@@ -319,9 +319,9 @@ class MechanizeCurl::HTTP::Agent
     # This section keeps the original Mechanize methods
     request_auth             request, uri
     disable_keep_alive       request
-    enable_gzip              request
-    request_accept           request
-    request_language_charset request
+    # enable_gzip              request
+    # request_accept           request
+    # request_language_charset request
     request_cookies          request, uri
     request_host             request, uri
     request_referer          request, uri, referer_uri
