@@ -350,7 +350,7 @@ class MechanizeCurl::HTTP::Agent
     curl.timeout         = @read_timeout
     curl.url             = uri.to_s
     curl.useragent       = @user_agent
-    curl.verbose         = !!@log
+    curl.verbose         = !!log
     curl.version         = @context.http_version || Curl::HTTP_1_1
 
     # An object that imitates a Net::HTTP::Response* subclass
