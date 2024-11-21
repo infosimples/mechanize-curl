@@ -3,7 +3,7 @@ warn 'mechanize/cookie will be deprecated.  Please migrate to the http-cookie AP
 
 require 'http/cookie'
 
-class Mechanize
+class MechanizeCurl
   module CookieDeprecated
     def __deprecated__(to = nil)
       $VERBOSE or return

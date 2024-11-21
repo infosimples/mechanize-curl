@@ -5,7 +5,7 @@ require 'http/cookie_jar'
 require 'http/cookie_jar/yaml_saver'
 require 'mechanize_curl/cookie'
 
-class Mechanize
+class MechanizeCurl
   module CookieJarIMethods
     include CookieDeprecated
 

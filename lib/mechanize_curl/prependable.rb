@@ -22,7 +22,7 @@
 #
 # Usage:
 #
-#     class Mechanize
+#     class MechanizeCurl
 #       # module with methods that overrides those of X
 #       module Y
 #       end
