@@ -1,4 +1,4 @@
-require 'mechanize-curl'
+require 'mechanize_curl'
 require 'ostruct'
 
 # LatestUAFetcher fetches latest user agents from `WhatIsMyBrowser.com`.

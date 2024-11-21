@@ -1,7 +1,7 @@
 # This example logs a user in to rubygems and prints out the body of the
 # page after logging the user in.
 require 'rubygems'
-require 'mechanize-curl'
+require 'mechanize_curl'
 require 'logger'
 
 # Create a new mechanize object

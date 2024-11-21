@@ -12,7 +12,7 @@ First thing is first.  Make sure that you've required mechanize and that you
 instantiate a new mechanize object:
 
   require 'rubygems'
-  require 'mechanize-curl'
+  require 'mechanize_curl'
 
   agent = Mechanize.new
 
@@ -73,7 +73,7 @@ click links, let's try something more complicated like filling out a form.
 
 Let's continue with our google example.  Here's the code we have so far:
   require 'rubygems'
-  require 'mechanize-curl'
+  require 'mechanize_curl'
 
   agent = Mechanize.new
   page = agent.get('http://google.com/')
@@ -112,7 +112,7 @@ button.
 Let's take a look at the code all together:
 
   require 'rubygems'
-  require 'mechanize-curl'
+  require 'mechanize_curl'
 
   agent = Mechanize.new
   page = agent.get('http://google.com/')

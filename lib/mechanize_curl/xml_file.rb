@@ -7,7 +7,7 @@
 #
 # Example:
 #
-#   require 'mechanize-curl'
+#   require 'mechanize_curl'
 #
 #   agent = MechanizeCurl.new
 #   xml = agent.get('http://example.org/some-xml-file.xml')

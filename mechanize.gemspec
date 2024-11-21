@@ -3,9 +3,9 @@
 require_relative 'lib/mechanize_curl/version'
 
 Gem::Specification.new do |spec|
-  spec.name = "mechanize-curl"
+  spec.name = "mechanize_curl"
   spec.version = MechanizeCurl::VERSION
-  spec.homepage = "https://github.com/infosimples/mechanize-curl/"
+  spec.homepage = "https://github.com/infosimples/mechanize_curl/"
   spec.summary = 'Mechanize gem fork that uses CURL instead of net/http'
   spec.description =
     [
@@ -37,11 +37,11 @@ Gem::Specification.new do |spec|
 
   spec.metadata = {
     'yard.run'          => 'yard',
-    'bug_tracker_uri'   => 'https://github.com/infosimples/mechanize-curl/issues',
-    'changelog_uri'     => 'https://github.com/infosimples/mechanize-curl/CHANGELOG.md',
-    'documentation_uri' => 'https://www.rubydoc.info/gems/mechanize-curl',
-    'homepage_uri'      => 'https://github.com/infosimples/mechanize-curl',
-    'source_code_uri'   => 'https://github.com/infosimples/mechanize-curl'
+    'bug_tracker_uri'   => 'https://github.com/infosimples/mechanize_curl/issues',
+    'changelog_uri'     => 'https://github.com/infosimples/mechanize_curl/CHANGELOG.md',
+    'documentation_uri' => 'https://www.rubydoc.info/gems/mechanize_curl',
+    'homepage_uri'      => 'https://github.com/infosimples/mechanize_curl',
+    'source_code_uri'   => 'https://github.com/infosimples/mechanize_curl'
   }
 
   spec.license = "MIT"

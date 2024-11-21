@@ -10,7 +10,7 @@
 #
 # == Example
 #
-#   require 'mechanize-curl'
+#   require 'mechanize_curl'
 #
 #   agent = MechanizeCurl.new
 #   agent.get('http://example.com/foo.jpg').class  #=> MechanizeCurl::File

@@ -1,5 +1,5 @@
 require 'rubygems'
-require 'mechanize-curl'
+require 'mechanize_curl'
 
 agent = MechanizeCurl.new
 agent.max_history = nil # unlimited history

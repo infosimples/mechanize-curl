@@ -20,7 +20,7 @@ require 'zlib'
 #
 # == Example
 #
-#   require 'mechanize-curl'
+#   require 'mechanize_curl'
 #   require 'logger'
 #
 #   agent = MechanizeCurl.new

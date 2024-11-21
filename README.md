@@ -2,7 +2,7 @@
 
 Fork of https://github.com/sparklemotion/mechanize
 
-https://www.rubydoc.info/gems/mechanize-curl/
+https://www.rubydoc.info/gems/mechanize_curl/
 
 ## Description
 

@@ -8,7 +8,7 @@
 #
 # This example saves all .pdf files
 #
-#   require 'mechanize-curl'
+#   require 'mechanize_curl'
 #
 #   agent = MechanizeCurl.new
 #   agent.pluggable_parser.pdf = MechanizeCurl::FileSaver

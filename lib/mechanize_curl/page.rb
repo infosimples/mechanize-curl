@@ -5,7 +5,7 @@
 #
 # Example:
 #
-#   require 'mechanize-curl'
+#   require 'mechanize_curl'
 #
 #   agent = MechanizeCurl.new
 #   agent.get('http://google.com/').class # => MechanizeCurl::Page
