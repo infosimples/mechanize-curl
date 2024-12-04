@@ -3,6 +3,13 @@ require 'tempfile'
 require 'net/ntlm'
 require 'webrobots'
 
+def make_tempfile name
+  io = Tempfile.new name
+  io.unlink
+  io.binmode
+  io
+end
+
 # "Fake" request class that replaces Net::HTTP::Request*
 # This aims to maximize compatibility with the original Mechanize code
 class CurlHttpRequest
@@ -1397,13 +1404,6 @@ class MechanizeCurl::HTTP::Agent
     proxy_uri.password = pass if pass
 
     @http.proxy = proxy_uri
-  end
-
-  def make_tempfile name
-    io = Tempfile.new name
-    io.unlink
-    io.binmode
-    io
   end
 
   def use_tempfile? size
