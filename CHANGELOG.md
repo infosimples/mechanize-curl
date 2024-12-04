@@ -1,6 +1,10 @@
 # Mechanize CHANGELOG
 
 # Mechanize after CURL fork
+## 0.0.2 / 2024-12-04
+
+* Fix `make_tempfile` being accessed only inside one class. @adrianodennanni
+
 ## 0.0.1 / 2024-11-19
 
 * Add basic support for CURL requests using the `curb` gem. @adrianodennanni
